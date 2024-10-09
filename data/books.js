@@ -1,0 +1,72 @@
+export const booksData = [
+  {
+    id: 1,
+    title: "The Great Gatsby",
+    author: "F. Scott Fitzgerald",
+    description: "A novel set in the 1920s about the enigmatic Jay Gatsby and his unrequited love for Daisy Buchanan.",
+    image: "https://via.placeholder.com/150",
+  },
+  {
+    id: 2,
+    title: "1984",
+    author: "George Orwell",
+    description: "A dystopian novel about a totalitarian regime that uses surveillance and propaganda to control its citizens.",
+    image: "https://via.placeholder.com/150",
+  },
+  {
+    id: 3,
+    title: "Moby Dick",
+    author: "Herman Melville",
+    description: "The story of Captain Ahab's obsessive quest to kill the white whale, Moby Dick.",
+    image: "https://via.placeholder.com/150",
+  },
+  {
+    id: 4,
+    title: "Pride and Prejudice",
+    author: "Jane Austen",
+    description: "A classic romantic novel about the manners and courtship of British landed gentry in the early 19th century.",
+    image: "https://via.placeholder.com/150",
+  },
+  {
+    id: 5,
+    title: "To Kill a Mockingbird",
+    author: "Harper Lee",
+    description: "A novel set in the American South during the 1930s, exploring themes of racism and justice.",
+    image: "https://via.placeholder.com/150",
+  },
+  {
+    id: 6,
+    title: "The Catcher in the Rye",
+    author: "J.D. Salinger",
+    description: "A story about the experiences of Holden Caulfield, a troubled teenager navigating adolescence in New York City.",
+    image: "https://via.placeholder.com/150",
+  },
+  {
+    id: 7,
+    title: "The Hobbit",
+    author: "J.R.R. Tolkien",
+    description: "Bilbo Baggins embarks on an adventure to recover treasure guarded by the dragon Smaug.",
+    image: "https://via.placeholder.com/150",
+  },
+  {
+    id: 8,
+    title: "War and Peace",
+    author: "Leo Tolstoy",
+    description: "An epic novel about the French invasion of Russia and its effects on five aristocratic families.",
+    image: "https://via.placeholder.com/150",
+  },
+  {
+    id: 9,
+    title: "The Alchemist",
+    author: "Paulo Coelho",
+    description: "A philosophical novel about a young Andalusian shepherd who dreams of finding treasure in Egypt.",
+    image: "https://via.placeholder.com/150",
+  },
+  {
+    id: 10,
+    title: "The Lord of the Rings",
+    author: "J.R.R. Tolkien",
+    description: "An epic fantasy about the quest to destroy the One Ring and defeat the Dark Lord Sauron.",
+    image: "https://via.placeholder.com/150",
+  }
+];

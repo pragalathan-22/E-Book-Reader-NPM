@@ -11,7 +11,8 @@ import LoginScreen from "./screens/LoginScreen";
 import LilbraryScreen from "./screens/LibraryScreen";
 import ImportScreen from "./screens/ImportScreen";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-
+import SeeMoreScreen from "./screens/SeeMoreScreen";
+import PlayScreen from './screens/PlayScreen';
 
 
 
@@ -116,7 +117,8 @@ function Navigation() {
                 {/* <Stack.Screen name="Library" component={LilbraryScreen} options={{ headerShown: false }} /> */}
                 <Stack.Screen name="Import" component={ImportScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
-                
+                <Stack.Screen name="SeeMore" component={SeeMoreScreen} options={{headerShown:false}} />
+                <Stack.Screen name="PlayScreen" component={PlayScreen} options={{headerShown:false}}/>
 
             </Stack.Navigator>
         </NavigationContainer>

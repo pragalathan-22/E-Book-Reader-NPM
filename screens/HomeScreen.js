@@ -15,8 +15,10 @@ import {
 import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native"; // Import useNavigation hook
 
 const HomeScreen = () => {
+  const navigation = useNavigation(); // Get the navigation object
   const [searchText, setSearchText] = useState("");
 
   return (
@@ -40,7 +42,6 @@ const HomeScreen = () => {
                 value={searchText}
                 onChangeText={setSearchText}
               />
-              {/* Profile icon removed */}
             </View>
 
             {/* Scrollable Content Section */}
@@ -60,7 +61,10 @@ const HomeScreen = () => {
                 <AuthorProfile name="Author 4" />
                 <AuthorProfile name="Author 5" />
 
-                <TouchableOpacity style={styles.seeMoreButton}>
+                <TouchableOpacity
+                  style={styles.seeMoreButton}
+                  onPress={() => navigation.navigate("SeeMore")} // Add onPress to navigate
+                >
                   <Text style={styles.seeMoreText}>See More</Text>
                 </TouchableOpacity>
               </ScrollView>
@@ -77,7 +81,10 @@ const HomeScreen = () => {
                 <ClipCard title="Clip 3" />
                 <ClipCard title="Clip 4" />
 
-                <TouchableOpacity style={styles.seeMoreButton}>
+                <TouchableOpacity
+                  style={styles.seeMoreButton}
+                  onPress={() => navigation.navigate("SeeMore")}
+                >
                   <Text style={styles.seeMoreText}>See More</Text>
                 </TouchableOpacity>
               </ScrollView>
@@ -94,7 +101,10 @@ const HomeScreen = () => {
                 <ClipCard title="Trending Clip 3" />
                 <ClipCard title="Trending Clip 4" />
 
-                <TouchableOpacity style={styles.seeMoreButton}>
+                <TouchableOpacity
+                  style={styles.seeMoreButton}
+                  onPress={() => navigation.navigate("SeeMore")}
+                >
                   <Text style={styles.seeMoreText}>See More</Text>
                 </TouchableOpacity>
               </ScrollView>
@@ -111,7 +121,10 @@ const HomeScreen = () => {
                 <ClipCard title="Suggested Book 3" />
                 <ClipCard title="Suggested Book 4" />
 
-                <TouchableOpacity style={styles.seeMoreButton}>
+                <TouchableOpacity
+                  style={styles.seeMoreButton}
+                  onPress={() => navigation.navigate("SeeMore")}
+                >
                   <Text style={styles.seeMoreText}>See More</Text>
                 </TouchableOpacity>
               </ScrollView>
@@ -197,16 +210,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 16, // Added for better scrolling
+    paddingHorizontal: 16,
   },
   authorProfile: {
     alignItems: "center",
-    marginRight: 20, // Increase the right margin for better spacing
+    marginRight: 20,
   },
   authorImage: {
     width: 60,
     height: 60,
-    borderRadius: 30, // Circular image
+    borderRadius: 30,
     borderWidth: 2,
     borderColor: "#ffffff",
   },
@@ -247,5 +260,17 @@ const styles = StyleSheet.create({
     color: "#b0b0b0",
     fontSize: 14,
     textAlign: "center",
+  },
+  seeMoreButton: {
+    backgroundColor: "#2b394b",
+    borderRadius: 20,
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+  seeMoreText: {
+    color: "#ffffff",
+    fontWeight: "600",
   },
 });
