@@ -25,7 +25,7 @@ const HomeScreen = () => {
         <KeyboardAvoidingView
           style={styles.container}
           behavior={Platform.OS === "ios" ? "padding" : "height"}
-          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0} // Adjust for iOS header
+          keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
         >
           <SafeAreaView style={styles.safeArea}>
             {/* Header Section with Search and Menu */}
@@ -38,18 +38,33 @@ const HomeScreen = () => {
                 placeholder="Search..."
                 placeholderTextColor="white"
                 value={searchText}
-                onChangeText={setSearchText} // Update state on text change
+                onChangeText={setSearchText}
               />
-              <TouchableOpacity style={styles.profileIcon}>
-                <Image
-                  source={{ uri: "https://www.gravatar.com/avatar/?d=mp" }} // Sample profile image URL
-                  style={styles.iconImage}
-                />
-              </TouchableOpacity>
+              {/* Profile icon removed */}
             </View>
 
             {/* Scrollable Content Section */}
             <ScrollView contentContainerStyle={[styles.scrollContainer, { paddingBottom: 80 }]}>
+              {/* Scrollable Authors Section */}
+              <Text style={styles.sectionTitle}>Authors</Text>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.authorsContainer}
+                style={{ paddingHorizontal: 16 }}
+                decelerationRate="fast"
+              >
+                <AuthorProfile name="Author 1" />
+                <AuthorProfile name="Author 2" />
+                <AuthorProfile name="Author 3" />
+                <AuthorProfile name="Author 4" />
+                <AuthorProfile name="Author 5" />
+
+                <TouchableOpacity style={styles.seeMoreButton}>
+                  <Text style={styles.seeMoreText}>See More</Text>
+                </TouchableOpacity>
+              </ScrollView>
+
               {/* Scrollable Recent Clips Section */}
               <Text style={styles.sectionTitle}>Recent Clips</Text>
               <ScrollView
@@ -61,6 +76,10 @@ const HomeScreen = () => {
                 <ClipCard title="Clip 2" />
                 <ClipCard title="Clip 3" />
                 <ClipCard title="Clip 4" />
+
+                <TouchableOpacity style={styles.seeMoreButton}>
+                  <Text style={styles.seeMoreText}>See More</Text>
+                </TouchableOpacity>
               </ScrollView>
 
               {/* Scrollable Trending Clips Section */}
@@ -74,6 +93,10 @@ const HomeScreen = () => {
                 <ClipCard title="Trending Clip 2" />
                 <ClipCard title="Trending Clip 3" />
                 <ClipCard title="Trending Clip 4" />
+
+                <TouchableOpacity style={styles.seeMoreButton}>
+                  <Text style={styles.seeMoreText}>See More</Text>
+                </TouchableOpacity>
               </ScrollView>
 
               {/* Scrollable Suggestions Section */}
@@ -87,12 +110,29 @@ const HomeScreen = () => {
                 <ClipCard title="Suggested Book 2" />
                 <ClipCard title="Suggested Book 3" />
                 <ClipCard title="Suggested Book 4" />
+
+                <TouchableOpacity style={styles.seeMoreButton}>
+                  <Text style={styles.seeMoreText}>See More</Text>
+                </TouchableOpacity>
               </ScrollView>
             </ScrollView>
           </SafeAreaView>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>
     </LinearGradient>
+  );
+};
+
+// AuthorProfile component for displaying circular author images
+const AuthorProfile = ({ name }) => {
+  return (
+    <View style={styles.authorProfile}>
+      <Image
+        source={{ uri: "https://www.gravatar.com/avatar/?d=mp" }} // Replace with actual author image URLs
+        style={styles.authorImage}
+      />
+      <Text style={styles.authorName}>{name}</Text>
+    </View>
   );
 };
 
@@ -125,19 +165,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
-    marginTop: 40, // Adjust this value to move the header down
+    marginTop: 40,
   },
   menuButton: {
     marginRight: 10,
-  },
-  profileIcon: {
-    padding: 10,
-    marginLeft: "auto", // Aligns profile icon to the right
-  },
-  iconImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20, // Makes the image circular
   },
   searchInput: {
     flex: 1,
@@ -156,31 +187,51 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   scrollContainer: {
-    flexGrow: 1, // Ensures scrollable area expands correctly
+    flexGrow: 1,
   },
   clipContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
+  authorsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 10,
+    paddingHorizontal: 16, // Added for better scrolling
+  },
+  authorProfile: {
+    alignItems: "center",
+    marginRight: 20, // Increase the right margin for better spacing
+  },
+  authorImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30, // Circular image
+    borderWidth: 2,
+    borderColor: "#ffffff",
+  },
+  authorName: {
+    marginTop: 5,
+    color: "#ffffff",
+    fontSize: 14,
+    textAlign: "center",
+  },
   card: {
-    backgroundColor: "#1e293b", // Background color for the card
-    borderRadius: 8, // Slightly curved corners
+    backgroundColor: "#1e293b",
+    borderRadius: 8,
     padding: 10,
-    marginRight: 10, // Space between cards
-    width: 120, // Adjusted card width for a more book-like shape
-    height: 200, // Increased height for a book appearance
-    elevation: 5, // For Android shadow
-    shadowColor: "#000", // iOS shadow
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    marginRight: 10,
+    width: 120,
+    height: 200,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
   cardCover: {
-    backgroundColor: "#2b394b", // Cover color for the book appearance
-    borderRadius: 6, // Inner rounded corners
+    backgroundColor: "#2b394b",
+    borderRadius: 6,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -195,6 +246,6 @@ const styles = StyleSheet.create({
   cardDescription: {
     color: "#b0b0b0",
     fontSize: 14,
-    textAlign: "center", // Center text description
+    textAlign: "center",
   },
 });

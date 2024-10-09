@@ -14,6 +14,7 @@ import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 
 
+
 const Tab = createBottomTabNavigator();
 
 function BottomTabs() {
@@ -61,7 +62,7 @@ function BottomTabs() {
             />
 
 
-            <Tab.Screen name="Library" component={LilbraryScreen}
+            {/* <Tab.Screen name="Library" component={LilbraryScreen}
                 options={{
                     tabBarLabel: "Library",  
                     headerShown: false,  
@@ -73,7 +74,7 @@ function BottomTabs() {
                             <Ionicons name="library-outline" size={24} color="black" />
                         ),
                 }}
-            />
+            /> */}
 
             <Tab.Screen name="Import" component={ImportScreen}
                 options={{
@@ -112,9 +113,10 @@ function Navigation() {
         <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Library" component={LilbraryScreen} options={{ headerShown: false }} />
+                {/* <Stack.Screen name="Library" component={LilbraryScreen} options={{ headerShown: false }} /> */}
                 <Stack.Screen name="Import" component={ImportScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
+                
 
             </Stack.Navigator>
         </NavigationContainer>
