@@ -21,6 +21,13 @@ const HomeScreen = () => {
   const navigation = useNavigation(); // Get the navigation object
   const [searchText, setSearchText] = useState("");
 
+  // Function to handle search
+  const handleSearch = () => {
+    if (searchText.trim() !== "") {
+      navigation.navigate("SearchResults", { query: searchText });
+    }
+  };
+
   return (
     <LinearGradient colors={["#334155", "#131624"]} style={styles.gradient}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -32,16 +39,23 @@ const HomeScreen = () => {
           <SafeAreaView style={styles.safeArea}>
             {/* Header Section with Search and Menu */}
             <View style={styles.header}>
-              <TouchableOpacity style={styles.menuButton}>
-                <Ionicons name="menu" size={30} color="white" />
-              </TouchableOpacity>
+
+              {/* Updated TextInput with onSubmitEditing and Search Button */}
               <TextInput
                 style={styles.searchInput}
-                placeholder="Search..."
+                placeholder="Search for books..."
                 placeholderTextColor="white"
                 value={searchText}
                 onChangeText={setSearchText}
+                onSubmitEditing={handleSearch} // Trigger search when "Enter" is pressed
               />
+
+              <TouchableOpacity
+                style={styles.searchButton}
+                onPress={handleSearch} // Trigger search when search button is pressed
+              >
+                <Ionicons name="search" size={24} color="white" />
+              </TouchableOpacity>
             </View>
 
             {/* Scrollable Content Section */}
@@ -63,31 +77,12 @@ const HomeScreen = () => {
 
                 <TouchableOpacity
                   style={styles.seeMoreButton}
-                  onPress={() => navigation.navigate("SeeMore")} // Add onPress to navigate
+                  onPress={() => navigation.navigate("AuthorPage")}
                 >
                   <Text style={styles.seeMoreText}>See More</Text>
                 </TouchableOpacity>
               </ScrollView>
 
-              {/* Scrollable Recent Clips Section */}
-              <Text style={styles.sectionTitle}>Recent Clips</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.clipContainer}
-              >
-                <ClipCard title="Clip 1" />
-                <ClipCard title="Clip 2" />
-                <ClipCard title="Clip 3" />
-                <ClipCard title="Clip 4" />
-
-                <TouchableOpacity
-                  style={styles.seeMoreButton}
-                  onPress={() => navigation.navigate("SeeMore")}
-                >
-                  <Text style={styles.seeMoreText}>See More</Text>
-                </TouchableOpacity>
-              </ScrollView>
 
               {/* Scrollable Trending Clips Section */}
               <Text style={styles.sectionTitle}>Trending Clips</Text>
@@ -192,6 +187,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     color: "white",
     marginRight: 10,
+  },
+  searchButton: {
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
   sectionTitle: {
     fontSize: 22,

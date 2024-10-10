@@ -8,13 +8,13 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import LoginScreen from "./screens/LoginScreen";
-import LilbraryScreen from "./screens/LibraryScreen";
 import ImportScreen from "./screens/ImportScreen";
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import SeeMoreScreen from "./screens/SeeMoreScreen";
 import PlayScreen from './screens/PlayScreen';
-
-
+import SearchResultsScreen from "./screens/SearchResultsScreen";
+import AuthorPage from "./screens/AuthorPage";
+import AuthorBooksScreen from "./screens/AuthorBooksScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -119,7 +119,9 @@ function Navigation() {
                 <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
                 <Stack.Screen name="SeeMore" component={SeeMoreScreen} options={{headerShown:false}} />
                 <Stack.Screen name="PlayScreen" component={PlayScreen} options={{headerShown:false}}/>
-
+                <Stack.Screen name="SearchResults" component={SearchResultsScreen} options={{headerShown:false}}/>
+                <Stack.Screen name="AuthorPage" component={AuthorPage} options={{headerShown:false}}/>
+                <Stack.Screen name="AuthorBooksScreen" component={AuthorBooksScreen} options={{headerShown:false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     )

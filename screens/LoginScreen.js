@@ -1,4 +1,4 @@
-// screens/loginScreen.js
+// screens/LoginScreen.js
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Pressable, Alert, TextInput } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,27 +14,39 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
-  // Function to handle Email Sign-In
-  const handleEmailSignIn = async () => {
-    if (!email || !password) {
-      Alert.alert('Email and Password are required for this sign-in method.');
-      return;
-    }
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      console.log('User signed in:', user);
-      navigation.navigate('Main'); // Ensure 'Main' is a valid route in your navigation
-    } catch (error) {
-      console.error('Error signing in with email:', error);
+ const handleEmailSignIn = async () => {
+  if (!email || !password) {
+    Alert.alert('Email and Password are required for this sign-in method.');
+    return;
+  }
+
+  console.log('Attempting sign-in with Email:', email); // Debugging log
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+    console.log('User signed in:', user);
+    navigation.navigate('Main'); // Ensure 'Main' is a valid route in your navigation
+  } catch (error) {
+    console.error('Error signing in with email:', error);
+    console.error('Full error object:', error); // Log the full error object
+    if (error.code === 'auth/invalid-email') {
+      Alert.alert('Invalid Email Format', 'Please enter a valid email address.');
+    } else if (error.code === 'auth/user-disabled') {
+      Alert.alert('User Disabled', 'This user has been disabled.');
+    } else if (error.code === 'auth/user-not-found') {
+      Alert.alert('User Not Found', 'No user found with this email address.');
+    } else if (error.code === 'auth/wrong-password') {
+      Alert.alert('Wrong Password', 'The password is incorrect.');
+    } else {
       Alert.alert('Login Failed', error.message);
     }
-  };
+  }
+};
+
 
   // Function to handle Sign In with E-Book Reader
   const handleEBookReaderSignIn = () => {
-    // Implement your logic for signing in with E-Book Reader
-    // This can be a direct navigation to Main if no credentials are required
     console.log('Signed in with E-Book Reader');
     navigation.navigate('Main'); // Navigate to Main or handle any logic required
   };
@@ -84,7 +96,7 @@ const LoginScreen = () => {
         {/* Sign In With E-Book Reader Button */}
         <Pressable
           style={styles.signInButton}
-          onPress={handleEBookReaderSignIn} // Update to use the E-Book Reader sign-in handler
+          onPress={handleEBookReaderSignIn}
         >
           <Text style={styles.buttonText}>Sign In With E-Book Reader</Text>
         </Pressable>
