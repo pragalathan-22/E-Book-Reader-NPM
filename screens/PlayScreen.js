@@ -3,6 +3,15 @@ import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'rea
 import { LinearGradient } from 'expo-linear-gradient';
 import { Picker } from '@react-native-picker/picker'; // Import Picker for dropdowns
 import Icon from 'react-native-vector-icons/Ionicons'; // Import an icon library
+import * as Speech from 'expo-speech'; // Import speech module for text-to-speech
+
+
+// Hypothetical function to handle translation (you need to implement this using a translation API)
+const translateText = async (text, targetLanguage) => {
+  // Implement translation logic here using an API like Google Translate
+  // Return translated text based on the selected language
+  return text; // This should be replaced with actual translated content
+};
 
 const PlayScreen = ({ route }) => {
   const { book } = route.params; // Get book data passed from SeeMoreScreen
@@ -12,6 +21,30 @@ const PlayScreen = ({ route }) => {
   const [selectedVoice, setSelectedVoice] = useState('Male');
   const [showOptions, setShowOptions] = useState(false); // State to toggle visibility
   const [expandedChapter, setExpandedChapter] = useState(null); // Track which chapter is expanded
+
+  // Function to handle text-to-speech playback
+  const handlePlay = async () => {
+    const content = book.chapters.map((chapter) => chapter.content).join(' '); // Combine all chapter content
+
+    // Translate content if the selected language is not English
+    let translatedContent = content;
+    if (selectedLanguage !== 'English') {
+      translatedContent = await translateText(content, selectedLanguage);
+    }
+
+    // Speech options for language and voice
+    const options = {
+      language: selectedLanguage === 'English' ? 'en' 
+                : selectedLanguage === 'Spanish' ? 'es' 
+                : selectedLanguage === 'French' ? 'fr' 
+                : selectedLanguage === 'German' ? 'de' 
+                : 'ta', // 'ta' for Tamil
+      pitch: selectedVoice === 'Male' ? 1 : 1.2, // Adjust the pitch for male and female voices
+    };
+
+    // Start speaking the translated content
+    Speech.speak(translatedContent, options);
+  };
 
   return (
     <View style={styles.container}>
@@ -57,13 +90,13 @@ const PlayScreen = ({ route }) => {
               selectedValue={selectedLanguage}
               style={styles.picker}
               onValueChange={(itemValue) => setSelectedLanguage(itemValue)}
-              dropdownIconColor="white" // Change dropdown icon color
+              dropdownIconColor="white"
             >
               <Picker.Item label="English" value="English" />
               <Picker.Item label="Spanish" value="Spanish" />
               <Picker.Item label="French" value="French" />
               <Picker.Item label="German" value="German" />
-              {/* Add more languages as needed */}
+              <Picker.Item label="Tamil" value="Tamil" />
             </Picker>
 
             {/* Voice Selector */}
@@ -72,7 +105,7 @@ const PlayScreen = ({ route }) => {
               selectedValue={selectedVoice}
               style={styles.picker}
               onValueChange={(itemValue) => setSelectedVoice(itemValue)}
-              dropdownIconColor="white" // Change dropdown icon color
+              dropdownIconColor="white"
             >
               <Picker.Item label="Male" value="Male" />
               <Picker.Item label="Female" value="Female" />
@@ -80,7 +113,8 @@ const PlayScreen = ({ route }) => {
           </View>
         )}
 
-        <TouchableOpacity style={styles.playButton}>
+        {/* Play Button */}
+        <TouchableOpacity style={styles.playButton} onPress={handlePlay}>
           <Text style={styles.playButtonText}>Play</Text>
         </TouchableOpacity>
       </LinearGradient>
@@ -176,20 +210,20 @@ const styles = StyleSheet.create({
   picker: {
     height: 50,
     width: '100%',
-    color: 'white', // Change the text color
+    color: 'white',
   },
   iconContainer: {
-    position: 'absolute', // Position the icon absolutely
-    right: 20, // Position from the right
-    top: 40, // Position from the top
-    zIndex: 1, // Ensure the icon is above other elements
+    position: 'absolute',
+    right: 20,
+    top: 40,
+    zIndex: 1,
   },
   optionsContainer: {
     padding: 20,
     width: '100%',
-    backgroundColor: '#2D3748', // Background color for options
+    backgroundColor: '#2D3748',
     position: 'absolute',
-    top: 300, // Adjust to position under the book container
-    zIndex: 1, // Ensure options are above other elements
+    top: 300,
+    zIndex: 1,
   },
 });

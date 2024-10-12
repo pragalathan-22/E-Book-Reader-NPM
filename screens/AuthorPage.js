@@ -7,16 +7,16 @@ const AuthorPage = () => {
 
   // Sample list of authors
   const authors = [
-    { id: 1, name: "Author 1", imageUrl: "https://www.gravatar.com/avatar/?d=mp" },
-    { id: 2, name: "Author 2", imageUrl: "https://www.gravatar.com/avatar/?d=mp" },
-    { id: 3, name: "Author 3", imageUrl: "https://www.gravatar.com/avatar/?d=mp" },
-    { id: 4, name: "Author 4", imageUrl: "https://www.gravatar.com/avatar/?d=mp" },
-    { id: 5, name: "Author 5", imageUrl: "https://www.gravatar.com/avatar/?d=mp" },
+    { id: 1, name: "F. Scott Fitzgerald", imageUrl: "https://dummyimage.com/100x100/cccccc/000000&text=F.+Scott+Fitzgerald" },
+    { id: 2, name: "George Orwell", imageUrl: "https://dummyimage.com/100x100/cccccc/000000&text=George+Orwell" },
+    { id: 3, name: "Harper Lee", imageUrl: "https://dummyimage.com/100x100/cccccc/000000&text=Harper+Lee" },
+    { id: 4, name: "J.K. Rowling", imageUrl: "https://dummyimage.com/100x100/cccccc/000000&text=J.K.+Rowling" },
+    { id: 5, name: "Mark Twain", imageUrl: "https://dummyimage.com/100x100/cccccc/000000&text=Mark+Twain" },
     // Add more authors as needed
   ];
 
   return (
-     <View style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Authors</Text>
       <ScrollView contentContainerStyle={styles.authorsContainer}>
         {authors.map((author) => (

@@ -1,3 +1,4 @@
+// Import necessary components and hooks
 import {
   SafeAreaView,
   ScrollView,
@@ -16,6 +17,7 @@ import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native"; // Import useNavigation hook
+import { booksData } from '../data/books'; // Import your books data
 
 const HomeScreen = () => {
   const navigation = useNavigation(); // Get the navigation object
@@ -39,8 +41,6 @@ const HomeScreen = () => {
           <SafeAreaView style={styles.safeArea}>
             {/* Header Section with Search and Menu */}
             <View style={styles.header}>
-
-              {/* Updated TextInput with onSubmitEditing and Search Button */}
               <TextInput
                 style={styles.searchInput}
                 placeholder="Search for books..."
@@ -49,7 +49,6 @@ const HomeScreen = () => {
                 onChangeText={setSearchText}
                 onSubmitEditing={handleSearch} // Trigger search when "Enter" is pressed
               />
-
               <TouchableOpacity
                 style={styles.searchButton}
                 onPress={handleSearch} // Trigger search when search button is pressed
@@ -69,11 +68,13 @@ const HomeScreen = () => {
                 style={{ paddingHorizontal: 16 }}
                 decelerationRate="fast"
               >
-                <AuthorProfile name="Author 1" />
-                <AuthorProfile name="Author 2" />
-                <AuthorProfile name="Author 3" />
-                <AuthorProfile name="Author 4" />
-                <AuthorProfile name="Author 5" />
+                {booksData.map((book) => (
+                  <AuthorProfile 
+                    key={book.id}
+                    name={book.author}
+                    authorImage={book.authorImage} // Pass the author's image URL
+                  />
+                ))}
 
                 <TouchableOpacity
                   style={styles.seeMoreButton}
@@ -83,7 +84,6 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </ScrollView>
 
-
               {/* Scrollable Trending Clips Section */}
               <Text style={styles.sectionTitle}>Trending Clips</Text>
               <ScrollView
@@ -91,11 +91,9 @@ const HomeScreen = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.clipContainer}
               >
-                <ClipCard title="Trending Clip 1" />
-                <ClipCard title="Trending Clip 2" />
-                <ClipCard title="Trending Clip 3" />
-                <ClipCard title="Trending Clip 4" />
-
+                {booksData.slice(0, 4).map((book, index) => (
+                  <ClipCard key={index} title={book.title} image={book.image} />
+                ))}
                 <TouchableOpacity
                   style={styles.seeMoreButton}
                   onPress={() => navigation.navigate("SeeMore")}
@@ -132,11 +130,11 @@ const HomeScreen = () => {
 };
 
 // AuthorProfile component for displaying circular author images
-const AuthorProfile = ({ name }) => {
+const AuthorProfile = ({ name, authorImage }) => {
   return (
     <View style={styles.authorProfile}>
       <Image
-        source={{ uri: "https://www.gravatar.com/avatar/?d=mp" }} // Replace with actual author image URLs
+        source={{ uri: authorImage }} // Use the author's image URL passed as a prop
         style={styles.authorImage}
       />
       <Text style={styles.authorName}>{name}</Text>
@@ -145,12 +143,12 @@ const AuthorProfile = ({ name }) => {
 };
 
 // ClipCard component for reusable card design
-const ClipCard = ({ title }) => {
+const ClipCard = ({ title, image }) => {
   return (
     <TouchableOpacity style={styles.card}>
+      <Image source={{ uri: image }} style={styles.cardImage} />
       <View style={styles.cardCover}>
         <Text style={styles.cardTitle}>{title}</Text>
-        <Text style={styles.cardDescription}>Description of {title}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -174,9 +172,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     marginTop: 40,
-  },
-  menuButton: {
-    marginRight: 10,
   },
   searchInput: {
     flex: 1,
@@ -242,6 +237,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
   },
+  cardImage: {
+    width: '100%',
+    height: 120,
+    borderRadius: 6,
+  },
   cardCover: {
     backgroundColor: "#2b394b",
     borderRadius: 6,
@@ -255,11 +255,6 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "600",
     marginBottom: 5,
-  },
-  cardDescription: {
-    color: "#b0b0b0",
-    fontSize: 14,
-    textAlign: "center",
   },
   seeMoreButton: {
     backgroundColor: "#2b394b",

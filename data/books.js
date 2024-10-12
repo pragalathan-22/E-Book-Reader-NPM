@@ -4,7 +4,8 @@ export const booksData = [
     title: "The Great Gatsby",
     author: "F. Scott Fitzgerald",
     description: "A novel set in the 1920s about the enigmatic Jay Gatsby and his unrequited love for Daisy Buchanan.",
-    image: "https://via.placeholder.com/150",
+    image: "https://dummyimage.com/150x200/cccccc/000000&text=Book+Image",
+    authorImage: "https://dummyimage.com/100x100/cccccc/000000&text=F.+Scott+Fitzgerald",
     chapters: [
       {
         title: "Chapter 1: In My Younger and More Vulnerable Years",
@@ -21,7 +22,8 @@ export const booksData = [
     title: "1984",
     author: "George Orwell",
     description: "A dystopian novel about a totalitarian regime that uses surveillance and propaganda to control its citizens.",
-    image: "https://via.placeholder.com/150",
+    image: "https://picsum.photos/150/200?random=1",
+    authorImage: "https://dummyimage.com/100x100/cccccc/000000&text=George+Orwell",
     chapters: [
       {
         title: "Chapter 1: The Principles of Newspeak",
@@ -33,5 +35,5 @@ export const booksData = [
       }
     ],
   },
-  // Add more books as needed, each with chapters...
+  // Add more books as needed, each with chapters and author images...
 ];
