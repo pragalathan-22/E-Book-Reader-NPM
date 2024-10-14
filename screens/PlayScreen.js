@@ -1,49 +1,88 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Picker } from '@react-native-picker/picker'; // Import Picker for dropdowns
-import Icon from 'react-native-vector-icons/Ionicons'; // Import an icon library
-import * as Speech from 'expo-speech'; // Import speech module for text-to-speech
+import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/Ionicons';
+import * as Speech from 'expo-speech';
 
-
-// Hypothetical function to handle translation (you need to implement this using a translation API)
 const translateText = async (text, targetLanguage) => {
-  // Implement translation logic here using an API like Google Translate
-  // Return translated text based on the selected language
-  return text; // This should be replaced with actual translated content
+  // Implement translation logic using a translation API.
+  return text;
 };
 
 const PlayScreen = ({ route }) => {
-  const { book } = route.params; // Get book data passed from SeeMoreScreen
-
-  // State variables for language and voice selection
+  const { book } = route.params;
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [selectedVoice, setSelectedVoice] = useState('Male');
-  const [showOptions, setShowOptions] = useState(false); // State to toggle visibility
-  const [expandedChapter, setExpandedChapter] = useState(null); // Track which chapter is expanded
+  const [showOptions, setShowOptions] = useState(false);
+  const [expandedChapter, setExpandedChapter] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playingChapter, setPlayingChapter] = useState(null);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  
+  const translatedContentRef = useRef('');
 
-  // Function to handle text-to-speech playback
-  const handlePlay = async () => {
-    const content = book.chapters.map((chapter) => chapter.content).join(' '); // Combine all chapter content
-
-    // Translate content if the selected language is not English
-    let translatedContent = content;
-    if (selectedLanguage !== 'English') {
-      translatedContent = await translateText(content, selectedLanguage);
+  const handlePlayChapter = async (chapter, index) => {
+    if (playingChapter !== null && playingChapter !== index) {
+      Speech.stop();
+      setIsPlaying(false);
+      setPlayingChapter(null);
+      setCurrentWordIndex(0);
     }
 
-    // Speech options for language and voice
-    const options = {
-      language: selectedLanguage === 'English' ? 'en' 
-                : selectedLanguage === 'Spanish' ? 'es' 
-                : selectedLanguage === 'French' ? 'fr' 
-                : selectedLanguage === 'German' ? 'de' 
-                : 'ta', // 'ta' for Tamil
-      pitch: selectedVoice === 'Male' ? 1 : 1.2, // Adjust the pitch for male and female voices
-    };
+    if (playingChapter === index) {
+      Speech.stop();
+      setIsPlaying(false);
+      setPlayingChapter(null);
+      setCurrentWordIndex(0);
+      setExpandedChapter(null);
+    } else {
+      if (selectedLanguage !== 'English' && translatedContentRef.current === '') {
+        translatedContentRef.current = await translateText(chapter.content, selectedLanguage);
+      } else {
+        translatedContentRef.current = chapter.content;
+      }
 
-    // Start speaking the translated content
-    Speech.speak(translatedContent, options);
+      const words = translatedContentRef.current.split(' ');
+      const options = {
+        language: selectedLanguage === 'English' ? 'en' : 'ta',
+        pitch: selectedVoice === 'Male' ? 1 : 1.2,
+        rate: 0.8, // Increase this value for faster speech (1 is normal, 1.5 is faster)
+        onStart: () => {
+          setCurrentWordIndex(0); // Start from the first word
+        },
+        onDone: () => {
+          setIsPlaying(false);
+          setPlayingChapter(null); // Reset playing chapter
+          setExpandedChapter(null); // Collapse chapter
+          setCurrentWordIndex(0); // Reset current word index
+        },
+        onStopped: () => {
+          setIsPlaying(false);
+          setPlayingChapter(null); // Reset playing chapter
+          setExpandedChapter(null); // Collapse chapter
+          setCurrentWordIndex(0); // Reset current word index
+        },
+      };
+
+      Speech.speak(translatedContentRef.current, options);
+
+      setIsPlaying(true);
+      setPlayingChapter(index);
+      setExpandedChapter(index);
+
+      // Simulate word highlighting
+      const wordHighlightInterval = setInterval(() => {
+        if (currentWordIndex < words.length) {
+          setCurrentWordIndex((prevIndex) => prevIndex + 1);
+        } else {
+          clearInterval(wordHighlightInterval); // Clear interval after last word
+        }
+      }, 500); // Adjust timing as needed (e.g., 500ms per word)
+
+      // Reset current word index when the chapter is stopped
+      return () => clearInterval(wordHighlightInterval);
+    }
   };
 
   return (
@@ -58,33 +97,51 @@ const PlayScreen = ({ route }) => {
           <Text style={styles.bookAuthor}>{book.author}</Text>
           <Text style={styles.bookDescription}>{book.description}</Text>
 
-          {/* Display Chapter Titles */}
           {book.chapters.map((chapter, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => setExpandedChapter(expandedChapter === index ? null : index)}
-              style={styles.chapterContainer}
-            >
-              <Text style={styles.chapterTitle}>{chapter.title}</Text>
+            <View key={index} style={styles.chapterContainer}>
+              <TouchableOpacity onPress={() => setExpandedChapter(expandedChapter === index ? null : index)} style={styles.chapterHeader}>
+                <Text style={styles.chapterTitle}>{chapter.title}</Text>
+                <TouchableOpacity
+                  style={styles.circularPlayButton}
+                  onPress={() => handlePlayChapter(chapter, index)}
+                >
+                  <Icon
+                    name={isPlaying && playingChapter === index ? 'stop' : 'play'}
+                    size={20}
+                    color="#ffffff"
+                  />
+                </TouchableOpacity>
+              </TouchableOpacity>
+
               {expandedChapter === index && (
-                <Text style={styles.chapterContent}>{chapter.content}</Text>
+                <View>
+                  <Text style={styles.chapterContent}>
+                    {translatedContentRef.current.split(' ').map((word, i) => (
+                      <Text
+                        key={i}
+                        style={{
+                          color: currentWordIndex === i ? 'yellow' : 'white', // Highlight current word color
+                        }}
+                      >
+                        {word}{' '}
+                      </Text>
+                    ))}
+                  </Text>
+                </View>
               )}
-            </TouchableOpacity>
+
+            </View>
           ))}
         </ScrollView>
 
-        {/* Icon to toggle options (Settings Icon) */}
-        <TouchableOpacity 
-          onPress={() => setShowOptions(!showOptions)} 
-          style={styles.iconContainer}
-        >
+        {/* Settings Icon */}
+        <TouchableOpacity onPress={() => setShowOptions(!showOptions)} style={styles.iconContainer}>
           <Icon name="settings-outline" size={30} color="white" />
         </TouchableOpacity>
 
-        {/* Language and Voice Selector (conditionally rendered) */}
+        {/* Settings Options */}
         {showOptions && (
           <View style={styles.optionsContainer}>
-            {/* Language Selector */}
             <Text style={styles.label}>Select Language:</Text>
             <Picker
               selectedValue={selectedLanguage}
@@ -93,13 +150,9 @@ const PlayScreen = ({ route }) => {
               dropdownIconColor="white"
             >
               <Picker.Item label="English" value="English" />
-              <Picker.Item label="Spanish" value="Spanish" />
-              <Picker.Item label="French" value="French" />
-              <Picker.Item label="German" value="German" />
               <Picker.Item label="Tamil" value="Tamil" />
             </Picker>
 
-            {/* Voice Selector */}
             <Text style={styles.label}>Select Voice:</Text>
             <Picker
               selectedValue={selectedVoice}
@@ -112,11 +165,6 @@ const PlayScreen = ({ route }) => {
             </Picker>
           </View>
         )}
-
-        {/* Play Button */}
-        <TouchableOpacity style={styles.playButton} onPress={handlePlay}>
-          <Text style={styles.playButtonText}>Play</Text>
-        </TouchableOpacity>
       </LinearGradient>
     </View>
   );
@@ -178,6 +226,11 @@ const styles = StyleSheet.create({
   chapterContainer: {
     marginVertical: 10,
   },
+  chapterHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   chapterTitle: {
     color: '#34d399',
     fontSize: 18,
@@ -189,18 +242,13 @@ const styles = StyleSheet.create({
     marginTop: 5,
     textAlign: 'justify',
   },
-  playButton: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 5,
-    margin: 20,
+  circularPlayButton: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#34d399',
+    justifyContent: 'center',
     alignItems: 'center',
-    width: '80%',
-  },
-  playButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
   },
   label: {
     color: 'white',
@@ -219,11 +267,14 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   optionsContainer: {
-    padding: 20,
-    width: '100%',
+    padding: 15,
+    width: '50%',
     backgroundColor: '#2D3748',
     position: 'absolute',
-    top: 300,
+    right: 20,
+    top: 100,
+    borderRadius: 10,
     zIndex: 1,
+    elevation: 5,
   },
 });
