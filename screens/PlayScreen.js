@@ -47,7 +47,7 @@ const PlayScreen = ({ route }) => {
       const options = {
         language: selectedLanguage === 'English' ? 'en' : 'ta',
         pitch: selectedVoice === 'Male' ? 1 : 1.2,
-        rate: 0.8,
+        rate: 0.7,
         onStart: () => {
           setCurrentWordIndex(0);
         },

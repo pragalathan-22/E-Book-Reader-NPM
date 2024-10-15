@@ -4,16 +4,17 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as WebBrowser from 'expo-web-browser'; // Import WebBrowser for opening PDFs
+import { Ionicons } from '@expo/vector-icons'; // Import the Ionicons for the trash icon
 
 const ImportScreen = () => {
   const [files, setFiles] = useState([]);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
 
   // Define the folder and file path
   const dataFolderPath = FileSystem.documentDirectory + 'data/';
-  const jsonFilePath = dataFolderPath + 'bookFiles.json'; // Path for JSON file
+  const jsonFilePath = dataFolderPath + 'bookFiles.json';
 
-  // Ensure the data directory exists
   const ensureDirectoryExists = async () => {
     const dirInfo = await FileSystem.getInfoAsync(dataFolderPath);
     if (!dirInfo.exists) {
@@ -21,94 +22,125 @@ const ImportScreen = () => {
     }
   };
 
-  // Function to load the existing files from AsyncStorage and JSON file
   const loadFiles = async () => {
     try {
-      // Load from AsyncStorage
       const storedFiles = await AsyncStorage.getItem('bookFiles');
+      const allFiles = new Set(); // Use a Set to avoid duplicates
+
       if (storedFiles) {
-        setFiles(JSON.parse(storedFiles)); // Parse and set files if they exist
+        const parsedFiles = JSON.parse(storedFiles);
+        parsedFiles.forEach(file => allFiles.add(JSON.stringify(file))); // Add files to the Set
       }
 
-      // Load from JSON file
-      await ensureDirectoryExists(); // Ensure the directory exists before loading
+      await ensureDirectoryExists();
       const fileInfo = await FileSystem.getInfoAsync(jsonFilePath);
       if (fileInfo.exists) {
         const fileData = await FileSystem.readAsStringAsync(jsonFilePath);
         const existingFiles = JSON.parse(fileData);
-        setFiles((prevFiles) => [...prevFiles, ...existingFiles]); // Combine files from both sources
+        existingFiles.forEach(file => allFiles.add(JSON.stringify(file))); // Add files from JSON
       }
+
+      // Convert the Set back to an array and update the state
+      setFiles(Array.from(allFiles).map(file => JSON.parse(file)));
     } catch (error) {
       console.log('Error loading files:', error);
     }
   };
 
   useEffect(() => {
-    loadFiles(); // Load files when the component mounts
+    loadFiles();
   }, []);
 
-  // Function to pick files (EPUB, PDF, MOBI)
   const handleImportFiles = async () => {
+    console.log("Opening Document Picker..."); // Debug log
     const result = await DocumentPicker.getDocumentAsync({
       type: ['application/pdf', 'application/epub+zip', 'application/x-mobipocket-ebook'],
     });
 
-    if (result.type === 'success' && result.assets && result.assets.length > 0) {
-      const file = result.assets[0]; // Get the first file from assets array
-      const newFile = { name: file.name, uri: file.uri, size: file.size }; // Extract file metadata
+    console.log("Document Picker Result:", result); // Debug log
 
-      const updatedFiles = [...files, newFile]; // Add the new file to the existing files
-      setFiles(updatedFiles); // Update the state
+    if (result && !result.canceled && result.assets && result.assets.length > 0) {
+      const file = result.assets[0];
+      const newFile = { name: file.name, uri: file.uri, size: file.size };
 
-      // Save or update the files in AsyncStorage
-      setLoading(true); // Set loading to true when starting the file save
-      try {
-        // Save to AsyncStorage
-        await AsyncStorage.setItem('bookFiles', JSON.stringify(updatedFiles));
-        console.log('Files saved in AsyncStorage'); // Log confirmation
+      // Check if the file already exists
+      const fileExists = files.some(existingFile => existingFile.uri === newFile.uri);
 
-        // Save to JSON file
-        await FileSystem.writeAsStringAsync(jsonFilePath, JSON.stringify(updatedFiles), {
-          encoding: FileSystem.EncodingType.UTF8,
-        });
-        console.log('File saved at:', jsonFilePath); // Log where the JSON file is saved
-      } catch (error) {
-        console.log('Error saving files:', error);
+      if (!fileExists) {
+        setLoading(true);
+        try {
+          const updatedFiles = [...files, newFile];
+          console.log('New file added:', newFile); // Debug log
+
+          // Save to AsyncStorage and JSON file
+          await AsyncStorage.setItem('bookFiles', JSON.stringify(updatedFiles));
+          await FileSystem.writeAsStringAsync(jsonFilePath, JSON.stringify(updatedFiles), {
+            encoding: FileSystem.EncodingType.UTF8,
+          });
+
+          console.log('Files saved successfully!'); // Debug log
+          loadFiles(); // Refresh files after saving
+        } catch (error) {
+          console.log('Error saving files:', error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        console.log('File already exists:', newFile.name); // Debug log
       }
-      setLoading(false); // Set loading to false after file save is complete
+    } else {
+      console.log('File selection was canceled or failed.'); // Debug log
     }
+  };
+
+  const openFile = (uri) => {
+    WebBrowser.openBrowserAsync(uri); // Open PDF in a browser or PDF viewer
+  };
+
+  const handleDeleteFile = async (uri) => {
+    const updatedFiles = files.filter(file => file.uri !== uri);
+    setFiles(updatedFiles); // Update state
+
+    // Save updated file list to AsyncStorage and JSON file
+    await AsyncStorage.setItem('bookFiles', JSON.stringify(updatedFiles));
+    await FileSystem.writeAsStringAsync(jsonFilePath, JSON.stringify(updatedFiles), {
+      encoding: FileSystem.EncodingType.UTF8,
+    });
+
+    console.log('File deleted:', uri); // Debug log
   };
 
   return (
     <LinearGradient colors={['#334155', '#131624']} style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container}>
-
-          {/* Header */}
           <Text style={styles.header}>Import Your Books</Text>
-
-          {/* File Import Section */}
           <Pressable style={styles.importButton} onPress={handleImportFiles}>
             <Text style={styles.buttonText}>Import EPUB, PDF, MOBI</Text>
           </Pressable>
 
           {/* Loading Indicator */}
-          {loading && <ActivityIndicator size="large" color="#ffffff" style={styles.loadingIndicator} />}
-
-          {/* Displaying Selected Files */}
-          <View style={styles.filesContainer}>
-            {files.length > 0 ? (
-              files.map((file, index) => (
-                <View key={index} style={styles.fileBox}>
-                  <Text style={styles.fileText}>{file.name}</Text> {/* Display the file name */}
-                  <Text style={styles.uriText}>{file.uri}</Text>  {/* Display the file URI */}
-                </View>
-              ))
-            ) : (
-              <Text style={styles.noFilesText}>No files selected.</Text>
-            )}
-          </View>
-
+          {loading ? (
+            <ActivityIndicator size="large" color="#ffffff" style={styles.loadingIndicator} />
+          ) : (
+            <View style={styles.filesContainer}>
+              {files.length > 0 ? (
+                files.map((file, index) => (
+                  <View key={index} style={styles.fileBox}>
+                    <Pressable onPress={() => openFile(file.uri)} style={styles.filePressable}>
+                      <Text style={styles.fileText}>{file.name}</Text>
+                      <Text style={styles.uriText}>{(file.size / 1024).toFixed(2)} KB</Text>
+                    </Pressable>
+                    <Pressable onPress={() => handleDeleteFile(file.uri)} style={styles.deleteButton}>
+                      <Ionicons name="trash-outline" size={24} color="white" />
+                    </Pressable>
+                  </View>
+                ))
+              ) : (
+                <Text style={styles.noFilesText}>No files selected.</Text>
+              )}
+            </View>
+          )}
         </ScrollView>
       </SafeAreaView>
     </LinearGradient>
@@ -148,7 +180,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   fileBox: {
-    backgroundColor: '#ffffff',
+    backgroundColor: '#1e293b', // Lighter color for the file box
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
@@ -160,13 +192,23 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3.84,
     elevation: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Align items to the left and right
+    alignItems: 'center',
+  },
+  filePressable: {
+    flex: 1, // Allow this to take up space
+    marginRight: 10, // Space between file text and delete button
   },
   fileText: {
-    color: '#333',
+    color: '#ffffff', // Change text color for contrast
     fontWeight: 'bold',
   },
   uriText: {
-    color: '#666',
+    color: '#d1d5db', // Lighter color for file size
+  },
+  deleteButton: {
+    padding: 5,
   },
   noFilesText: {
     color: 'white',
