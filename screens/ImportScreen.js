@@ -4,10 +4,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as WebBrowser from 'expo-web-browser'; // Import WebBrowser for opening PDFs
-import { Ionicons } from '@expo/vector-icons'; // Import the Ionicons for the trash icon
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native'; // Import navigation
 
 const ImportScreen = () => {
+  const navigation = useNavigation(); // Initialize navigation
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -94,7 +95,7 @@ const ImportScreen = () => {
   };
 
   const openFile = (uri) => {
-    WebBrowser.openBrowserAsync(uri); // Open PDF in a browser or PDF viewer
+    navigation.navigate('ImportPlayScreen', { fileUri: uri }); // Navigate to ImportPlayScreen with file URI
   };
 
   const handleDeleteFile = async (uri) => {

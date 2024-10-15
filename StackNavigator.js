@@ -18,6 +18,7 @@ import AuthorBooksScreen from "./screens/AuthorBooksScreen";
 
 import SavedBooks from "./screens/SavedBooks";
 import { BooksContext } from "./context/BooksContext";
+import ImportPlayScreen from "./screens/ImportPlayScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -127,6 +128,7 @@ function Navigation() {
                 <Stack.Screen name="AuthorBooksScreen" component={AuthorBooksScreen} options={{headerShown:false}}/>
                 <Stack.Screen name="SavedBooks" component={SavedBooks} options={{headerShown:false}} />
                 <Stack.Screen name="BooksContext" component={BooksContext} options={{headerShown:false}}/>
+                <Stack.Screen name="ImportPlayScreen" component={ImportPlayScreen} options={{headerShown:false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     )
