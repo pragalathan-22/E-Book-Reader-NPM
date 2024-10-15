@@ -1,6 +1,24 @@
 export const booksData = [
   {
     id: 1,
+    title: "1985",
+    author: "George Orwell",
+    description: "A dystopian novel about a totalitarian regime that uses surveillance and propaganda to control its citizens.",
+    image: "https://picsum.photos/150/200?random=1",
+    authorImage: "https://dummyimage.com/100x100/cccccc/000000&text=George+Orwell",
+    chapters: [
+      {
+        title: "Chapter 1: The Principles of Newspeak",
+        content: "Newspeak is the official language of Oceania and is designed to meet the ideological needs of Ingsoc."
+      },
+      {
+        title: "Chapter 2: The Telescreens",
+        content: "The telescreen received and transmitted simultaneously. Any sound that Winston made, above the level of a very low whisper, would be picked up by it."
+      }
+    ],
+  },
+  {
+    id: 2,
     title: "The Great Gatsby",
     author: "F. Scott Fitzgerald",
     description: "A novel set in the 1920s about the enigmatic Jay Gatsby and his unrequited love for Daisy Buchanan.",
@@ -17,25 +35,7 @@ export const booksData = [
       }
     ],
   },
-  {
-    id: 2,
-    title: "1984",
-    author: "George Orwell",
-    description: "A dystopian novel about a totalitarian regime that uses surveillance and propaganda to control its citizens.",
-    image: "https://picsum.photos/150/200?random=1",
-    authorImage: "https://dummyimage.com/100x100/cccccc/000000&text=George+Orwell",
-    chapters: [
-      {
-        title: "Chapter 1: The Principles of Newspeak",
-        content: "Newspeak is the official language of Oceania and is designed to meet the ideological needs of Ingsoc."
-      },
-      {
-        title: "Chapter 2: The Telescreens",
-        content: "The telescreen received and transmitted simultaneously. Any sound that Winston made, above the level of a very low whisper, would be picked up by it."
-      }
-    ],
-  },
-
+  
   {
     id: 3,
     title: "1984",

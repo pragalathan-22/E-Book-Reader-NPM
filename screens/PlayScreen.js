@@ -47,21 +47,21 @@ const PlayScreen = ({ route }) => {
       const options = {
         language: selectedLanguage === 'English' ? 'en' : 'ta',
         pitch: selectedVoice === 'Male' ? 1 : 1.2,
-        rate: 0.8, // Increase this value for faster speech (1 is normal, 1.5 is faster)
+        rate: 0.8,
         onStart: () => {
-          setCurrentWordIndex(0); // Start from the first word
+          setCurrentWordIndex(0);
         },
         onDone: () => {
           setIsPlaying(false);
-          setPlayingChapter(null); // Reset playing chapter
-          setExpandedChapter(null); // Collapse chapter
-          setCurrentWordIndex(0); // Reset current word index
+          setPlayingChapter(null);
+          setExpandedChapter(null);
+          setCurrentWordIndex(0);
         },
         onStopped: () => {
           setIsPlaying(false);
-          setPlayingChapter(null); // Reset playing chapter
-          setExpandedChapter(null); // Collapse chapter
-          setCurrentWordIndex(0); // Reset current word index
+          setPlayingChapter(null);
+          setExpandedChapter(null);
+          setCurrentWordIndex(0);
         },
       };
 
@@ -71,18 +71,21 @@ const PlayScreen = ({ route }) => {
       setPlayingChapter(index);
       setExpandedChapter(index);
 
-      // Simulate word highlighting
       const wordHighlightInterval = setInterval(() => {
         if (currentWordIndex < words.length) {
           setCurrentWordIndex((prevIndex) => prevIndex + 1);
         } else {
-          clearInterval(wordHighlightInterval); // Clear interval after last word
+          clearInterval(wordHighlightInterval);
         }
-      }, 500); // Adjust timing as needed (e.g., 500ms per word)
+      }, 500);
 
-      // Reset current word index when the chapter is stopped
       return () => clearInterval(wordHighlightInterval);
     }
+  };
+
+  const handleSaveBook = () => {
+    // Implement your logic to save the book, such as saving to a database or local storage
+    alert('Book saved successfully!'); // Placeholder for save functionality
   };
 
   return (
@@ -93,7 +96,12 @@ const PlayScreen = ({ route }) => {
         </View>
 
         <ScrollView style={styles.textContainer}>
-          <Text style={styles.bookTitle}>{book.title}</Text>
+          <View style={styles.bookHeader}>
+            <Text style={styles.bookTitle}>{book.title}</Text>
+            <TouchableOpacity onPress={handleSaveBook} style={styles.saveIconContainer}>
+              <Icon name="bookmark-outline" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
           <Text style={styles.bookAuthor}>{book.author}</Text>
           <Text style={styles.bookDescription}>{book.description}</Text>
 
@@ -120,7 +128,7 @@ const PlayScreen = ({ route }) => {
                       <Text
                         key={i}
                         style={{
-                          color: currentWordIndex === i ? 'yellow' : 'white', // Highlight current word color
+                          color: currentWordIndex === i ? 'yellow' : 'white',
                         }}
                       >
                         {word}{' '}
@@ -134,12 +142,10 @@ const PlayScreen = ({ route }) => {
           ))}
         </ScrollView>
 
-        {/* Settings Icon */}
         <TouchableOpacity onPress={() => setShowOptions(!showOptions)} style={styles.iconContainer}>
           <Icon name="settings-outline" size={30} color="white" />
         </TouchableOpacity>
 
-        {/* Settings Options */}
         {showOptions && (
           <View style={styles.optionsContainer}>
             <Text style={styles.label}>Select Language:</Text>
@@ -207,11 +213,19 @@ const styles = StyleSheet.create({
     padding: 20,
     width: '100%',
   },
+  bookHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   bookTitle: {
     color: 'white',
     fontSize: 24,
     fontWeight: 'bold',
     marginTop: 10,
+  },
+  saveIconContainer: {
+    marginLeft: 10,
   },
   bookAuthor: {
     color: 'gray',

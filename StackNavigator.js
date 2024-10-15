@@ -16,6 +16,9 @@ import SearchResultsScreen from "./screens/SearchResultsScreen";
 import AuthorPage from "./screens/AuthorPage";
 import AuthorBooksScreen from "./screens/AuthorBooksScreen";
 
+import SavedBooks from "./screens/SavedBooks";
+import { BooksContext } from "./context/BooksContext";
+
 const Tab = createBottomTabNavigator();
 
 function BottomTabs() {
@@ -122,6 +125,8 @@ function Navigation() {
                 <Stack.Screen name="SearchResults" component={SearchResultsScreen} options={{headerShown:false}}/>
                 <Stack.Screen name="AuthorPage" component={AuthorPage} options={{headerShown:false}}/>
                 <Stack.Screen name="AuthorBooksScreen" component={AuthorBooksScreen} options={{headerShown:false}}/>
+                <Stack.Screen name="SavedBooks" component={SavedBooks} options={{headerShown:false}} />
+                <Stack.Screen name="BooksContext" component={BooksContext} options={{headerShown:false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     )

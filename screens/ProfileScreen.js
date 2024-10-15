@@ -2,6 +2,7 @@ import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpaci
 import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
+import { useNavigation } from '@react-navigation/native'; // Import navigation hook
 
 const ProfileScreen = () => {
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150');
@@ -10,7 +11,9 @@ const ProfileScreen = () => {
   const [email, setEmail] = useState('abc.com');
   const [modalVisible, setModalVisible] = useState(false); // Modal for editing
   const [fullImageModalVisible, setFullImageModalVisible] = useState(false); // Modal for full-size image
-  
+
+  const navigation = useNavigation(); // Hook to navigate
+
   const recentlySavedBooks = [
     { title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', cover: 'https://via.placeholder.com/100' },
     { title: '1984', author: 'George Orwell', cover: 'https://via.placeholder.com/100' },
@@ -101,7 +104,7 @@ const ProfileScreen = () => {
                 <Text style={styles.statLabel}>Current Reading</Text>
               </View>
               <View style={styles.statBox}>
-                <Text style={styles.statNumber}>32</Text>
+                <Text style={styles.statNumber} onPress={() => navigation.navigate("SavedBooks")}>32</Text>
                 <Text style={styles.statLabel}>Saved Books</Text>
               </View>
             </View>
@@ -124,6 +127,10 @@ const ProfileScreen = () => {
           {/* Additional Options */}
           <View style={styles.optionsSection}>
             <Text style={styles.sectionTitle}>Settings</Text>
+             {/* Saved Settings */}
+            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('SavedBooks')}>
+              <Text style={styles.optionText}>Saved Books</Text>
+            </TouchableOpacity>
             {/* Account Settings */}
             <TouchableOpacity style={styles.optionItem}>
               <Text style={styles.optionText}>Account Settings</Text>
@@ -139,14 +146,6 @@ const ProfileScreen = () => {
             {/* History */}
             <TouchableOpacity style={styles.optionItem}>
               <Text style={styles.optionText}>History</Text>
-            </TouchableOpacity>
-            {/* Language Settings */}
-            <TouchableOpacity style={styles.optionItem}>
-              <Text style={styles.optionText}>Language Settings</Text>
-            </TouchableOpacity>
-            {/* Theme Settings */}
-            <TouchableOpacity style={styles.optionItem}>
-              <Text style={styles.optionText}>Theme Settings</Text>
             </TouchableOpacity>
             {/* Logout */}
             <TouchableOpacity style={styles.optionItem}>
@@ -272,8 +271,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   bookItem: {
-    marginRight: 15,
-    alignItems: 'center',
+    marginRight: 20,
   },
   bookCover: {
     width: 100,
@@ -282,13 +280,12 @@ const styles = StyleSheet.create({
   },
   bookTitle: {
     color: 'white',
+    fontSize: 12,
     marginTop: 5,
-    fontSize: 14,
-    fontWeight: 'bold',
   },
   bookAuthor: {
     color: 'gray',
-    fontSize: 12,
+    fontSize: 10,
   },
   statsSection: {
     marginBottom: 30,
@@ -303,21 +300,21 @@ const styles = StyleSheet.create({
   },
   statNumber: {
     color: 'white',
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
   },
   statLabel: {
     color: 'gray',
-    fontSize: 14,
+    fontSize: 12,
   },
   optionsSection: {
-    marginBottom: 30,
     paddingHorizontal: 20,
+    marginBottom: 30,
   },
   optionItem: {
     paddingVertical: 15,
+    borderBottomColor: 'gray',
     borderBottomWidth: 1,
-    borderBottomColor: '#2c2f36',
   },
   optionText: {
     color: 'white',
@@ -327,33 +324,34 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Semi-transparent background
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
-    width: '80%',
     backgroundColor: 'white',
-    borderRadius: 10,
     padding: 20,
+    borderRadius: 10,
+    width: '80%',
     alignItems: 'center',
   },
   modalProfileImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginBottom: 15,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
   },
   modalInput: {
-    backgroundColor: '#f0f0f0',
+    backgroundColor: 'lightgray',
+    width: '100%',
     borderRadius: 5,
     padding: 10,
-    marginBottom: 15,
-    width: '100%',
+    marginBottom: 10,
   },
   modalButton: {
     backgroundColor: '#007bff',
+    padding: 10,
     borderRadius: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    width: '100%',
+    alignItems: 'center',
   },
   modalButtonText: {
     color: 'white',
@@ -363,7 +361,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Dark background
+    backgroundColor: 'rgba(0,0,0,0.9)',
   },
   fullImageModalBackground: {
     flex: 1,
@@ -371,8 +369,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   fullImage: {
-    width: '90%',
-    height: '90%',
-    resizeMode: 'contain',
+    width: '80%',
+    height: '80%',
+    borderRadius: 10,
   },
 });
