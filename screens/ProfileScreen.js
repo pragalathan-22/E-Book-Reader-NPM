@@ -146,19 +146,19 @@ const ProfileScreen = () => {
               <Text style={styles.optionText}>Saved Books</Text>
             </TouchableOpacity>
             {/* Account Settings */}
-            <TouchableOpacity style={styles.optionItem}>
+            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('')}>
               <Text style={styles.optionText}>Account Settings</Text>
             </TouchableOpacity>
             {/* App Preferences */}
-            <TouchableOpacity style={styles.optionItem}>
+            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('')}>
               <Text style={styles.optionText}>App Preferences</Text>
             </TouchableOpacity>
             {/* Help & Support */}
-            <TouchableOpacity style={styles.optionItem}>
+            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('HelpSupport')}>
               <Text style={styles.optionText}>Help & Support</Text>
             </TouchableOpacity>
             {/* History */}
-            <TouchableOpacity style={styles.optionItem}>
+            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('')}>
               <Text style={styles.optionText}>History</Text>
             </TouchableOpacity>
             {/* Logout */}
@@ -267,11 +267,11 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   editButton: {
-    color: 'blue',
+    color: 'grey',
     marginBottom: 10,
   },
   uploadButton: {
-    color: 'green',
+    color: 'grey',
   },
   statsSection: {
     marginBottom: 30,
