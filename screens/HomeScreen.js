@@ -12,6 +12,7 @@ import {
   Platform,
   Keyboard,
   TouchableWithoutFeedback,
+  FlatList,
 } from "react-native";
 import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -22,12 +23,27 @@ import { booksData } from '../data/books'; // Import your books data
 const HomeScreen = () => {
   const navigation = useNavigation(); // Get the navigation object
   const [searchText, setSearchText] = useState("");
+  const [filteredBooks, setFilteredBooks] = useState([]); // State for filtered books
 
   // Function to handle search
-  const handleSearch = () => {
-    if (searchText.trim() !== "") {
-      navigation.navigate("SearchResults", { query: searchText });
+  const handleSearch = (text) => {
+    setSearchText(text);
+    if (text.trim() !== "") {
+      const filtered = booksData.filter((book) =>
+        book.title.toLowerCase().includes(text.toLowerCase()) || // Filter by title
+        book.author.toLowerCase().includes(text.toLowerCase()) // Filter by author
+      );
+      setFilteredBooks(filtered);
+    } else {
+      setFilteredBooks([]);
     }
+  };
+
+  // Function to handle book selection from auto-suggestions
+  const handleBookSelect = (book) => {
+    navigation.navigate("PlayScreen", { book });
+    setSearchText(""); // Clear search text after selection
+    setFilteredBooks([]); // Clear filtered books after selection
   };
 
   return (
@@ -46,16 +62,41 @@ const HomeScreen = () => {
                 placeholder="Search for books..."
                 placeholderTextColor="white"
                 value={searchText}
-                onChangeText={setSearchText}
-                onSubmitEditing={handleSearch} // Trigger search when "Enter" is pressed
+                onChangeText={handleSearch} // Update search text and filter books
+                onSubmitEditing={() => {
+                  if (filteredBooks.length > 0) {
+                    handleBookSelect(filteredBooks[0]); // Select the first filtered book on "Enter"
+                  }
+                }}
               />
               <TouchableOpacity
                 style={styles.searchButton}
-                onPress={handleSearch} // Trigger search when search button is pressed
+                onPress={() => {
+                  if (filteredBooks.length > 0) {
+                    handleBookSelect(filteredBooks[0]); // Select the first filtered book when the button is pressed
+                  }
+                }}
               >
                 <Ionicons name="search" size={24} color="white" />
               </TouchableOpacity>
             </View>
+
+            {/* Auto-suggest results */}
+            {searchText.length > 0 && (
+              <FlatList
+                data={filteredBooks}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity
+                    style={styles.suggestionItem}
+                    onPress={() => handleBookSelect(item)}
+                  >
+                    <Text style={styles.suggestionText}>{item.title}</Text>
+                  </TouchableOpacity>
+                )}
+                style={styles.suggestionList}
+              />
+            )}
 
             {/* Scrollable Content Section */}
             <ScrollView contentContainerStyle={[styles.scrollContainer, { paddingBottom: 80 }]}>
@@ -248,40 +289,49 @@ const styles = StyleSheet.create({
     width: 120,
     height: 200,
     elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
   },
   cardImage: {
-    width: '100%',
-    height: 120,
-    borderRadius: 6,
+    width: "100%",
+    height: "70%",
+    borderRadius: 8,
   },
   cardCover: {
-    backgroundColor: "#2b394b",
-    borderRadius: 6,
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 10,
+    padding: 5,
   },
   cardTitle: {
-    fontSize: 18,
+    fontSize: 18, // Increased font size for the title
     color: "#ffffff",
-    fontWeight: "600",
-    marginBottom: 5,
+    textAlign: "center", // Center-aligned text
   },
   seeMoreButton: {
-    backgroundColor: "#2b394b",
-    borderRadius: 20,
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    marginLeft: 10,
+      backgroundColor: "#2b394b",
+      borderRadius: 20,
+      padding: 10,
+      alignItems: "center",
+      justifyContent: "center",
+      marginLeft: 10,
+    },
+    seeMoreText: {
+      color: "#ffffff",
+      fontWeight: "600",
+    },
+
+  suggestionsContainer: {
+    backgroundColor: "#1e293b",
+    borderRadius: 8,
+    maxHeight: 150,
+    marginTop: 10,
+    position: "absolute",
+    zIndex: 1000,
+    width: "100%",
   },
-  seeMoreText: {
+  suggestionItem: {
+    padding: 10,
+  },
+  suggestionText: {
     color: "#ffffff",
-    fontWeight: "600",
   },
 });
