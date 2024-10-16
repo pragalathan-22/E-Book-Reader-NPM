@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native'; // Import navigation hook
+import { auth } from '../services/firebase'; // Ensure this is the correct path to your Firebase setup
+import { signOut } from 'firebase/auth'; // Import the signOut function
 
 const ProfileScreen = () => {
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150');
@@ -46,6 +48,18 @@ const ProfileScreen = () => {
 
   const openFullImageModal = () => {
     setFullImageModalVisible(true); // Open full-size image modal
+  };
+
+  // Function to handle Logout
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigation.navigate('Login'); // Ensure you navigate to the Login screen or any other screen
+      Alert.alert("Logged Out", "You have successfully logged out.");
+    } catch (error) {
+      console.error('Logout Error:', error);
+      Alert.alert("Logout Failed", error.message);
+    }
   };
 
   return (
@@ -104,7 +118,7 @@ const ProfileScreen = () => {
                 <Text style={styles.statLabel}>Current Reading</Text>
               </View>
               <View style={styles.statBox}>
-                <Text style={styles.statNumber} onPress={() => navigation.navigate("SavedBooks")}>32</Text>
+                <Text style={styles.statNumber}>32</Text>
                 <Text style={styles.statLabel}>Saved Books</Text>
               </View>
             </View>
@@ -148,7 +162,7 @@ const ProfileScreen = () => {
               <Text style={styles.optionText}>History</Text>
             </TouchableOpacity>
             {/* Logout */}
-            <TouchableOpacity style={styles.optionItem}>
+            <TouchableOpacity style={styles.optionItem} onPress={handleLogout}>
               <Text style={styles.optionText}>Logout</Text>
             </TouchableOpacity>
           </View>
@@ -236,67 +250,50 @@ const styles = StyleSheet.create({
   },
   profileName: {
     color: 'white',
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   profileEmail: {
-    color: 'gray',
-    fontSize: 14,
+    color: 'white',
+    fontSize: 16,
+    marginBottom: 10,
   },
   profileInput: {
-    backgroundColor: 'white',
-    borderRadius: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    color: 'white',
     padding: 10,
-    marginBottom: 10,
+    borderRadius: 5,
     width: '80%',
+    marginBottom: 10,
   },
   editButton: {
-    color: '#007bff',
-    marginTop: 10,
-    fontWeight: 'bold',
-  },
-  uploadButton: {
-    color: '#007bff',
-    marginTop: 10,
-    fontWeight: 'bold',
-  },
-  recentSection: {
-    marginBottom: 30,
-    paddingHorizontal: 20,
-  },
-  sectionTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
+    color: 'blue',
     marginBottom: 10,
   },
-  bookItem: {
-    marginRight: 20,
-  },
-  bookCover: {
-    width: 100,
-    height: 150,
-    borderRadius: 5,
-  },
-  bookTitle: {
-    color: 'white',
-    fontSize: 12,
-    marginTop: 5,
-  },
-  bookAuthor: {
-    color: 'gray',
-    fontSize: 10,
+  uploadButton: {
+    color: 'green',
   },
   statsSection: {
     marginBottom: 30,
-    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  sectionTitle: {
+    color: 'white',
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   statsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
+    width: '100%',
   },
   statBox: {
     alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    padding: 15,
+    borderRadius: 10,
+    marginHorizontal: 10,
   },
   statNumber: {
     color: 'white',
@@ -304,54 +301,75 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   statLabel: {
-    color: 'gray',
-    fontSize: 12,
+    color: 'lightgray',
+    fontSize: 16,
+  },
+  recentSection: {
+    marginBottom: 30,
+  },
+  bookItem: {
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  bookCover: {
+    width: 80,
+    height: 120,
+    borderRadius: 5,
+    marginBottom: 5,
+  },
+  bookTitle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  bookAuthor: {
+    color: 'lightgray',
+    textAlign: 'center',
   },
   optionsSection: {
-    paddingHorizontal: 20,
     marginBottom: 30,
   },
   optionItem: {
-    paddingVertical: 15,
-    borderBottomColor: 'gray',
-    borderBottomWidth: 1,
+    padding: 15,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 5,
+    marginBottom: 10,
   },
   optionText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18, // Increased font size for options
+    lineHeight: 24, // Added line height for better spacing
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
     width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
     alignItems: 'center',
   },
   modalProfileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     marginBottom: 10,
   },
   modalInput: {
-    backgroundColor: 'lightgray',
     width: '100%',
-    borderRadius: 5,
-    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: 'gray',
     marginBottom: 10,
   },
   modalButton: {
-    backgroundColor: '#007bff',
+    marginTop: 10,
+    backgroundColor: 'blue',
     padding: 10,
     borderRadius: 5,
-    width: '100%',
-    alignItems: 'center',
   },
   modalButtonText: {
     color: 'white',
@@ -361,7 +379,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.9)',
   },
   fullImageModalBackground: {
     flex: 1,
@@ -369,8 +386,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   fullImage: {
-    width: '80%',
-    height: '80%',
-    borderRadius: 10,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
   },
 });

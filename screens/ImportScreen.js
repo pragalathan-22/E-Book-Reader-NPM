@@ -56,6 +56,7 @@ const ImportScreen = () => {
     console.log("Opening Document Picker..."); // Debug log
     const result = await DocumentPicker.getDocumentAsync({
       type: ['application/pdf', 'application/epub+zip', 'application/x-mobipocket-ebook'],
+      copyToCacheDirectory: true, // Optionally copy the document to the cache directory
     });
 
     console.log("Document Picker Result:", result); // Debug log
@@ -63,6 +64,13 @@ const ImportScreen = () => {
     if (result && !result.canceled && result.assets && result.assets.length > 0) {
       const file = result.assets[0];
       const newFile = { name: file.name, uri: file.uri, size: file.size };
+
+      // Check if the file size is less than or equal to 50 MB
+      const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
+      if (newFile.size > MAX_FILE_SIZE) {
+        alert('File size exceeds 50 MB limit. Please select a smaller file.');
+        return;
+      }
 
       // Check if the file already exists
       const fileExists = files.some(existingFile => existingFile.uri === newFile.uri);

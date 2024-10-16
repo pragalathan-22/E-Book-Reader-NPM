@@ -16,6 +16,7 @@ export const booksData = [
         content: "The telescreen received and transmitted simultaneously. Any sound that Winston made, above the level of a very low whisper, would be picked up by it."
       }
     ],
+    suggestedBooks: ["1984", "Animal Farm", "Brave New World"], // Suggested books
   },
   {
     id: 2,
@@ -34,8 +35,8 @@ export const booksData = [
         content: "This is a valley of ashes—a fantastic farm where ashes grow like wheat into ridges and hills and grotesque gardens."
       }
     ],
+    suggestedBooks: ["Tender is the Night", "This Side of Paradise"], // Suggested books
   },
-  
   {
     id: 3,
     title: "1984",
@@ -52,7 +53,8 @@ export const booksData = [
         title: "Chapter 2: Thoughtcrime",
         content: "The Thought Police would catch anyone guilty of thoughtcrime and erase them from existence."
       }
-    ]
+    ],
+    suggestedBooks: ["1985", "Fahrenheit 451"], // Suggested books
   },
   {
     id: 4,
@@ -70,7 +72,8 @@ export const booksData = [
         title: "Chapter 2: The Carpet-Bag",
         content: "I stuffed a shirt or two into my old carpet-bag, tucked it under my arm, and started for Cape Horn."
       }
-    ]
+    ],
+    suggestedBooks: ["The Sea-Wolf", "The Old Man and the Sea"], // Suggested books
   },
   {
     id: 5,
@@ -88,7 +91,8 @@ export const booksData = [
         title: "Chapter 2: Mr. Bennet’s Visit to Mr. Bingley",
         content: "Mr. Bennet was among the earliest of those who waited on Mr. Bingley."
       }
-    ]
+    ],
+    suggestedBooks: ["Emma", "Sense and Sensibility"], // Suggested books
   },
   {
     id: 6,
@@ -106,7 +110,8 @@ export const booksData = [
         title: "Chapter 2: Goodbye, Pencey Prep",
         content: "I was standing way the hell up on top of Thomsen Hill, right next to this crazy cannon that was in the Revolutionary War."
       }
-    ]
+    ],
+    suggestedBooks: ["To Kill a Mockingbird", "A Separate Peace"], // Suggested books
   },
   {
     id: 7,
@@ -124,7 +129,8 @@ export const booksData = [
         title: "Chapter 2: Roast Mutton",
         content: "They all sat down in a circle and started to argue with one another."
       }
-    ]
+    ],
+    suggestedBooks: ["The Lord of the Rings", "The Silmarillion"], // Suggested books
   },
   {
     id: 8,
@@ -142,7 +148,8 @@ export const booksData = [
         title: "Chapter 2: The Land of the Lotus-Eaters",
         content: "The crew encountered the Lotus-Eaters, whose sweet fruit made them forget their homes."
       }
-    ]
+    ],
+    suggestedBooks: ["The Iliad", "Metamorphoses"], // Suggested books
   },
   {
     id: 9,
@@ -160,25 +167,26 @@ export const booksData = [
         title: "Chapter 2: Conditioning the Citizens",
         content: "Hypnopaedia, or sleep-teaching, was used to condition citizens into accepting their roles in society."
       }
-    ]
+    ],
+    suggestedBooks: ["Fahrenheit 451", "The Giver"], // Suggested books
   },
   {
     id: 10,
-    title: "Frankenstein",
-    author: "Mary Shelley",
-    description: "The tragic tale of Victor Frankenstein, a scientist who creates a monstrous creature that turns against him.",
+    title: "The Picture of Dorian Gray",
+    author: "Oscar Wilde",
+    description: "A philosophical novel about a young man whose portrait ages while he remains eternally young, leading to his moral downfall.",
     image: "https://dummyimage.com/150x200/cccccc/000000&text=Book+Image",
-    authorImage: "https://dummyimage.com/100x100/cccccc/000000&text=Mary+Shelley",
+    authorImage: "https://dummyimage.com/100x100/cccccc/000000&text=Oscar+Wilde",
     chapters: [
       {
-        title: "Chapter 1: The Birth of a Monster",
-        content: "I had worked hard for nearly two years, for the sole purpose of infusing life into an inanimate body."
+        title: "Chapter 1: The Studio",
+        content: "The studio was filled with the rich odor of roses, and when the light summer wind stirred amidst the trees of the garden."
       },
       {
-        title: "Chapter 2: The Creature's Escape",
-        content: "I beheld the wretch—the miserable monster whom I had created."
+        title: "Chapter 2: The Portrait",
+        content: "As he gazed at the painting, a smile of pleasure passed across his face."
       }
-    ]
+    ],
+    suggestedBooks: ["The Canterville Ghost", "The Importance of Being Earnest"], // Suggested books
   }
-  // Add more books as needed, each with chapters and author images...
 ];

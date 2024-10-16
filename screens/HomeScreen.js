@@ -73,6 +73,7 @@ const HomeScreen = () => {
                     key={book.id}
                     name={book.author}
                     authorImage={book.authorImage} // Pass the author's image URL
+                    onPress={() => navigation.navigate('AuthorBooksScreen', { authorName: book.author })} // Navigate to AuthorBooksScreen
                   />
                 ))}
 
@@ -92,7 +93,13 @@ const HomeScreen = () => {
                 contentContainerStyle={styles.clipContainer}
               >
                 {booksData.slice(0, 4).map((book, index) => (
-                  <ClipCard key={index} title={book.title} image={book.image} />
+                  <ClipCard 
+                    key={index} 
+                    title={book.title} 
+                    image={book.image} 
+                    book={book} // Pass the book object to ClipCard
+                    navigation={navigation} // Pass navigation object to ClipCard
+                  />
                 ))}
                 <TouchableOpacity
                   style={styles.seeMoreButton}
@@ -109,10 +116,15 @@ const HomeScreen = () => {
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.clipContainer}
               >
-                <ClipCard title="Suggested Book 1" />
-                <ClipCard title="Suggested Book 2" />
-                <ClipCard title="Suggested Book 3" />
-                <ClipCard title="Suggested Book 4" />
+                {booksData.slice(0, 4).map((book, index) => (
+                  <ClipCard 
+                    key={index} 
+                    title={book.title} 
+                    image={book.image} 
+                    book={book} // Pass the book object to ClipCard
+                    navigation={navigation} // Pass navigation object to ClipCard
+                  />
+                ))}
 
                 <TouchableOpacity
                   style={styles.seeMoreButton}
@@ -130,22 +142,26 @@ const HomeScreen = () => {
 };
 
 // AuthorProfile component for displaying circular author images
-const AuthorProfile = ({ name, authorImage }) => {
+const AuthorProfile = ({ name, authorImage, onPress }) => {
   return (
-    <View style={styles.authorProfile}>
+    <TouchableOpacity style={styles.authorProfile} onPress={onPress}>
       <Image
         source={{ uri: authorImage }} // Use the author's image URL passed as a prop
         style={styles.authorImage}
       />
       <Text style={styles.authorName}>{name}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 // ClipCard component for reusable card design
-const ClipCard = ({ title, image }) => {
+const ClipCard = ({ title, image, book, navigation }) => {
+  const handlePress = () => {
+    navigation.navigate("PlayScreen", { book }); // Navigate to PlayScreen with book data
+  };
+
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={handlePress}>
       <Image source={{ uri: image }} style={styles.cardImage} />
       <View style={styles.cardCover}>
         <Text style={styles.cardTitle}>{title}</Text>
