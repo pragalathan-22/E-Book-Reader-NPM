@@ -17,7 +17,6 @@ import AuthorPage from "./screens/AuthorPage";
 import AuthorBooksScreen from "./screens/AuthorBooksScreen";
 
 import SavedBooks from "./screens/SavedBooks";
-import { BooksContext } from "./context/BooksContext";
 import ImportPlayScreen from "./screens/ImportPlayScreen";
 import HelpSupportScreen from "./screens/HelpSupportScreen";
 
@@ -119,7 +118,6 @@ function Navigation() {
         <NavigationContainer>
             <Stack.Navigator>
                 <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-                {/* <Stack.Screen name="Library" component={LilbraryScreen} options={{ headerShown: false }} /> */}
                 <Stack.Screen name="Import" component={ImportScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
                 <Stack.Screen name="SeeMore" component={SeeMoreScreen} options={{headerShown:false}} />
@@ -128,7 +126,6 @@ function Navigation() {
                 <Stack.Screen name="AuthorPage" component={AuthorPage} options={{headerShown:false}}/>
                 <Stack.Screen name="AuthorBooksScreen" component={AuthorBooksScreen} options={{headerShown:false}}/>
                 <Stack.Screen name="SavedBooks" component={SavedBooks} options={{headerShown:false}} />
-                <Stack.Screen name="BooksContext" component={BooksContext} options={{headerShown:false}}/>
                 <Stack.Screen name="ImportPlayScreen" component={ImportPlayScreen} options={{headerShown:false}}/>
                 <Stack.Screen name="HelpSupport" component={HelpSupportScreen} options={{headerShown:false}} />
             </Stack.Navigator>

@@ -50,7 +50,9 @@
     "react-native-tesseract-ocr": "^2.0.3",
     "react-native-tts": "^4.1.1",
     "react-native-vector-icons": "^10.2.0",
-    "react-native-webview": "^13.8.6"
+    "react-native-webview": "^13.8.6",
+    "react-native-web": "~0.19.10",
+    "@expo/metro-runtime": "~3.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
