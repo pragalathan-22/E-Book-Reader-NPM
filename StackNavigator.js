@@ -19,6 +19,7 @@ import AuthorBooksScreen from "./screens/AuthorBooksScreen";
 import SavedBooks from "./screens/SavedBooks";
 import ImportPlayScreen from "./screens/ImportPlayScreen";
 import HelpSupportScreen from "./screens/HelpSupportScreen";
+import AppPreferencesScreen from "./screens/AppPreferencesScreen"
 
 const Tab = createBottomTabNavigator();
 
@@ -128,6 +129,7 @@ function Navigation() {
                 <Stack.Screen name="SavedBooks" component={SavedBooks} options={{headerShown:false}} />
                 <Stack.Screen name="ImportPlayScreen" component={ImportPlayScreen} options={{headerShown:false}}/>
                 <Stack.Screen name="HelpSupport" component={HelpSupportScreen} options={{headerShown:false}} />
+                <Stack.Screen name="AppPreferencesScreen" component={AppPreferencesScreen} options={{headerShown:false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     )

@@ -150,7 +150,7 @@ const ProfileScreen = () => {
               <Text style={styles.optionText}>Account Settings</Text>
             </TouchableOpacity>
             {/* App Preferences */}
-            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('')}>
+            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('AppPreferencesScreen')}>
               <Text style={styles.optionText}>App Preferences</Text>
             </TouchableOpacity>
             {/* Help & Support */}
