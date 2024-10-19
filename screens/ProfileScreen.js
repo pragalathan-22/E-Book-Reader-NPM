@@ -141,10 +141,6 @@ const ProfileScreen = () => {
           {/* Additional Options */}
           <View style={styles.optionsSection}>
             <Text style={styles.sectionTitle}>Settings</Text>
-             {/* Saved Settings */}
-            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('SavedBooks')}>
-              <Text style={styles.optionText}>Saved Books</Text>
-            </TouchableOpacity>
             {/* Account Settings */}
             <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('')}>
               <Text style={styles.optionText}>Account Settings</Text>

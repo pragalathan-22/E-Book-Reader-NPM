@@ -20,6 +20,8 @@ import SavedBooks from "./screens/SavedBooks";
 import ImportPlayScreen from "./screens/ImportPlayScreen";
 import HelpSupportScreen from "./screens/HelpSupportScreen";
 import AppPreferencesScreen from "./screens/AppPreferencesScreen"
+import RegisterScreen from "./screens/RegisterScreen";
+import LilbraryScreen from "./screens/LilbraryScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -67,21 +69,6 @@ function BottomTabs() {
                 }}
             />
 
-
-            {/* <Tab.Screen name="Library" component={LilbraryScreen}
-                options={{
-                    tabBarLabel: "Library",  
-                    headerShown: false,  
-                    tabBarLabelStyle: { color: "white" },
-                    tabBarIcon: ({ focused }) =>
-                        focused ? (
-                            <Ionicons name="library" size={24} color="black" />
-                        ) : (
-                            <Ionicons name="library-outline" size={24} color="black" />
-                        ),
-                }}
-            /> */}
-
             <Tab.Screen name="Import" component={ImportScreen}
                 options={{
                     tabBarLabel: "Import",  
@@ -92,6 +79,20 @@ function BottomTabs() {
                             <MaterialCommunityIcons name="file-upload" size={24} color="black" />
                         ) : (
                             <MaterialIcons name="upload-file" size={24} color="black" />
+                        ),
+                }}
+            />
+
+            <Tab.Screen name="Library" component={LilbraryScreen}
+                options={{
+                    tabBarLabel: "Library",  
+                    headerShown: false,  
+                    tabBarLabelStyle: { color: "white" },
+                    tabBarIcon: ({ focused }) =>
+                        focused ? (
+                            <Ionicons name="library" size={24} color="black" />
+                        ) : (
+                            <Ionicons name="library-outline" size={24} color="black" />
                         ),
                 }}
             />
@@ -121,6 +122,7 @@ function Navigation() {
                 <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Import" component={ImportScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
+                <Stack.Screen name="LibraryScreen" component={LilbraryScreen} options={{headerShown:false}}/>
                 <Stack.Screen name="SeeMore" component={SeeMoreScreen} options={{headerShown:false}} />
                 <Stack.Screen name="PlayScreen" component={PlayScreen} options={{headerShown:false}}/>
                 <Stack.Screen name="SearchResults" component={SearchResultsScreen} options={{headerShown:false}}/>
@@ -130,6 +132,7 @@ function Navigation() {
                 <Stack.Screen name="ImportPlayScreen" component={ImportPlayScreen} options={{headerShown:false}}/>
                 <Stack.Screen name="HelpSupport" component={HelpSupportScreen} options={{headerShown:false}} />
                 <Stack.Screen name="AppPreferencesScreen" component={AppPreferencesScreen} options={{headerShown:false}}/>
+                <Stack.Screen name="ResigterScreen" component={RegisterScreen} options={{headerShown:false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     )
