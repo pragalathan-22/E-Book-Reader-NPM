@@ -1,31 +1,31 @@
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, TextInput, Image, Modal } from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, Image } from 'react-native';
+import React, { useContext } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BookContext } from '../context/BookContext';
 
 const LibraryScreen = () => {
+    const { savedBooks } = useContext(BookContext);
 
-  const books = [
-    { title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', cover: 'url_to_cover_image' },
-    { title: '1984', author: 'George Orwell', cover: 'url_to_cover_image' },
-    // Add more books as needed
-  ];
-
-  return (
-    <LinearGradient colors={['#334155', '#131624']} style={{ flex: 1 }}>
-      <SafeAreaView style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          <Text style={styles.header}>Your E-Book Library</Text>
-          {books.map((book, index) => (
-            <View key={index} style={styles.bookItem}>
-              <Image source={{ uri: book.cover }} style={styles.coverImage} />
-              <Text style={styles.bookTitle}>{book.title}</Text>
-              <Text style={styles.bookAuthor}>{book.author}</Text>
-            </View>
-          ))}
-        </ScrollView>
-      </SafeAreaView>
-    </LinearGradient>
-  );
+    return (
+        <LinearGradient colors={['#334155', '#131624']} style={{ flex: 1 }}>
+            <SafeAreaView style={styles.container}>
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    <Text style={styles.header}>Your E-Book Library</Text>
+                    {savedBooks.length > 0 ? (
+                        savedBooks.map((book, index) => (
+                            <View key={index} style={styles.bookItem}>
+                                <Image source={{ uri: book.cover }} style={styles.coverImage} />
+                                <Text style={styles.bookTitle}>{book.title}</Text>
+                                <Text style={styles.bookAuthor}>{book.author}</Text>
+                            </View>
+                        ))
+                    ) : (
+                        <Text style={styles.noBooksText}>No saved books yet!</Text>
+                    )}
+                </ScrollView>
+            </SafeAreaView>
+        </LinearGradient>
+    );
 };
 
 export default LibraryScreen;
@@ -68,5 +68,10 @@ const styles = StyleSheet.create({
   },
   bookAuthor: {
     color: '#94a3b8',
+  },
+  noBooksText: {
+    color: 'white',
+    textAlign: 'center',
+    marginTop: 20,
   },
 });

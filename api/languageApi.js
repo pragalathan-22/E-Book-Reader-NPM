@@ -1,22 +1,23 @@
 import axios from 'axios';
 
-// Example using LibreTranslate
-export const translateText = async (text, targetLanguage = 'ta') => {
+const translateText = async (text, targetLanguage) => {
+  const apiKey = 'AIzaSyAr_EtvpTL8zbgwv1Rc1plNJscRTqtzB5Q'; // Replace with your actual API key
+  const url = 'https://api.yourtranslationapi.com/translate'; // Replace with the actual API endpoint
+
   try {
-    const response = await axios.post(
-      'https://libretranslate.com/translate',
-      {
-        q: text,
-        source: 'en',
-        target: targetLanguage, // 'ta' for Tamil
-        format: 'text',
+    const response = await axios.post(url, {
+      text,
+      target_language: targetLanguage,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${apiKey}`, // If using Bearer token
+        'Content-Type': 'application/json',
       }
-    );
-    return response.data.translatedText;
+    });
+
+    return response.data.translatedText; // Adjust based on the API response structure
   } catch (error) {
     console.error('Translation error:', error);
-    return text; // Return original text in case of error
+    throw error; // Re-throw error to be handled elsewhere
   }
 };
-
-// You can add more functions for other language APIs if needed
