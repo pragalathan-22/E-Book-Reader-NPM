@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Speech from 'expo-speech';
-import translateText from '../api/languageApi'; // Ensure this points to the correct path of your API function
+
+const translateText = async (text, targetLanguage) => {
+  // Implement translation logic using a translation API.
+  return text;
+};
 
 const PlayScreen = ({ route }) => {
   const { book } = route.params;
@@ -15,76 +19,73 @@ const PlayScreen = ({ route }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playingChapter, setPlayingChapter] = useState(null);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [translatedContent, setTranslatedContent] = useState('');
+  
+  const translatedContentRef = useRef('');
 
   const handlePlayChapter = async (chapter, index) => {
-    if (playingChapter !== null) {
+    if (playingChapter !== null && playingChapter !== index) {
       Speech.stop();
-      if (playingChapter === index) {
-        setIsPlaying(false);
-        setPlayingChapter(null);
-        setCurrentWordIndex(0);
-        setExpandedChapter(null);
-        return;
-      }
+      setIsPlaying(false);
+      setPlayingChapter(null);
+      setCurrentWordIndex(0);
     }
 
-    setCurrentWordIndex(0);
-    setExpandedChapter(index);
-    setPlayingChapter(index);
-
-    // Translate the chapter content only if the selected language is not English
-    if (selectedLanguage !== 'English') {
-      setIsLoading(true);
-      try {
-        const translation = await translateText(chapter.content, selectedLanguage);
-        setTranslatedContent(translation);
-      } catch (error) {
-        Alert.alert('Translation Error', 'Failed to translate the chapter content.');
-        setTranslatedContent(chapter.content); // Fallback to original content
-      } finally {
-        setIsLoading(false);
-      }
+    if (playingChapter === index) {
+      Speech.stop();
+      setIsPlaying(false);
+      setPlayingChapter(null);
+      setCurrentWordIndex(0);
+      setExpandedChapter(null);
     } else {
-      setTranslatedContent(chapter.content); // If English, use original content
-    }
+      if (selectedLanguage !== 'English' && translatedContentRef.current === '') {
+        translatedContentRef.current = await translateText(chapter.content, selectedLanguage);
+      } else {
+        translatedContentRef.current = chapter.content;
+      }
 
-    const words = translatedContent.split(' ');
-    const options = {
-      language: selectedLanguage === 'English' ? 'en' : 'ta',
-      pitch: selectedVoice === 'Male' ? 1 : 1.2,
-      rate: 0.7,
-      onStart: () => {
-        setIsPlaying(true);
-      },
-      onDone: () => {
-        setIsPlaying(false);
-        setPlayingChapter(null);
-        setExpandedChapter(null);
-        setCurrentWordIndex(0);
-      },
-    };
+      const words = translatedContentRef.current.split(' ');
+      const options = {
+        language: selectedLanguage === 'English' ? 'en' : 'ta',
+        pitch: selectedVoice === 'Male' ? 1 : 1.2,
+        rate: 0.7,
+        onStart: () => {
+          setCurrentWordIndex(0);
+        },
+        onDone: () => {
+          setIsPlaying(false);
+          setPlayingChapter(null);
+          setExpandedChapter(null);
+          setCurrentWordIndex(0);
+        },
+        onStopped: () => {
+          setIsPlaying(false);
+          setPlayingChapter(null);
+          setExpandedChapter(null);
+          setCurrentWordIndex(0);
+        },
+      };
 
-    Speech.speak(translatedContent, options);
+      Speech.speak(translatedContentRef.current, options);
 
-    const wordHighlightInterval = setInterval(() => {
-      setCurrentWordIndex((prevIndex) => {
-        if (prevIndex < words.length - 1) {
-          return prevIndex + 1;
+      setIsPlaying(true);
+      setPlayingChapter(index);
+      setExpandedChapter(index);
+
+      const wordHighlightInterval = setInterval(() => {
+        if (currentWordIndex < words.length) {
+          setCurrentWordIndex((prevIndex) => prevIndex + 1);
         } else {
           clearInterval(wordHighlightInterval);
-          return prevIndex;
         }
-      });
-    }, 500);
+      }, 500);
 
-    return () => clearInterval(wordHighlightInterval);
+      return () => clearInterval(wordHighlightInterval);
+    }
   };
 
   const handleSaveBook = () => {
     // Implement your logic to save the book, such as saving to a database or local storage
-    Alert.alert('Success', 'Book saved successfully!'); // Placeholder for save functionality
+    alert('Book saved successfully!'); // Placeholder for save functionality
   };
 
   return (
@@ -106,10 +107,7 @@ const PlayScreen = ({ route }) => {
 
           {book.chapters.map((chapter, index) => (
             <View key={index} style={styles.chapterContainer}>
-              <TouchableOpacity
-                onPress={() => setExpandedChapter(expandedChapter === index ? null : index)}
-                style={styles.chapterHeader}
-              >
+              <TouchableOpacity onPress={() => setExpandedChapter(expandedChapter === index ? null : index)} style={styles.chapterHeader}>
                 <Text style={styles.chapterTitle}>{chapter.title}</Text>
                 <TouchableOpacity
                   style={styles.circularPlayButton}
@@ -126,7 +124,7 @@ const PlayScreen = ({ route }) => {
               {expandedChapter === index && (
                 <View>
                   <Text style={styles.chapterContent}>
-                    {translatedContent.split(' ').map((word, i) => (
+                    {translatedContentRef.current.split(' ').map((word, i) => (
                       <Text
                         key={i}
                         style={{
@@ -139,6 +137,7 @@ const PlayScreen = ({ route }) => {
                   </Text>
                 </View>
               )}
+
             </View>
           ))}
         </ScrollView>
@@ -270,24 +269,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 10,
   },
-  iconContainer: {
-    position: 'absolute',
-    bottom: 30,
-    right: 30,
-  },
-  optionsContainer: {
-    position: 'absolute',
-    bottom: 100,
-    right: 20,
-    backgroundColor: '#1f2937',
-    borderRadius: 10,
-    padding: 10,
-    width: 200,
-  },
   picker: {
     height: 50,
     width: '100%',
     color: 'white',
-    backgroundColor: '#334155',
+  },
+  iconContainer: {
+    position: 'absolute',
+    right: 20,
+    top: 40,
+    zIndex: 1,
+  },
+  optionsContainer: {
+    padding: 15,
+    width: '50%',
+    backgroundColor: '#2D3748',
+    position: 'absolute',
+    right: 20,
+    top: 100,
+    borderRadius: 10,
+    zIndex: 1,
+    elevation: 5,
   },
 });
