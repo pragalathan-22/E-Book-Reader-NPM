@@ -25,11 +25,7 @@ const LibraryScreen = () => {
                                     style={styles.bookItem} 
                                     onPress={() => handleBookPress(book)}
                                 >
-                                    <Image 
-                                        source={{ uri: book.cover }} 
-                                        style={styles.coverImage} 
-                                        onError={() => console.log('Failed to load image')} // Error handling
-                                    />
+                                    <Image source={{ uri: book.image }} style={styles.bookCover} />
                                     <View style={styles.bookDetails}>
                                         <Text style={styles.bookTitle}>{book.title}</Text>
                                         <Text style={styles.bookAuthor}>{book.author}</Text>
@@ -45,7 +41,6 @@ const LibraryScreen = () => {
         </LinearGradient>
     );
 };
-
 
 export default LibraryScreen;
 
@@ -81,7 +76,7 @@ const styles = StyleSheet.create({
         padding: 10,
         elevation: 2, // Add shadow effect
     },
-    coverImage: {
+    bookCover: { // Corrected from coverImage to bookCover
         width: '100%', // Full width of the item
         height: 150,
         borderRadius: 5,

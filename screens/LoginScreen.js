@@ -106,9 +106,9 @@ const LoginScreen = () => {
         {/* Already have an account? */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Don't have an account? </Text>
-          <Pressable onPress={() => navigation.navigate('ResigterScreen')}>
-            <Text style={styles.footerLink}>Register here</Text>
-          </Pressable>
+          <Pressable onPress={() => navigation.navigate('RegisterScreen')}>
+              <Text style={styles.footerLink}>Register here</Text>
+            </Pressable>
         </View>
       </SafeAreaView>
     </LinearGradient>

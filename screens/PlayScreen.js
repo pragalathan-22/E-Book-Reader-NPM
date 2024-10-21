@@ -13,7 +13,7 @@ const translateText = async (text, targetLanguage) => {
 
 const PlayScreen = ({ route }) => {
   const { book } = route.params;
-  const { savedBooks, addBook, removeBook } = useContext(BookContext);
+  const { savedBooks, addBook, removeBook, recentlyPlayedBooks, addToRecentlyPlayed } = useContext(BookContext);
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [selectedVoice, setSelectedVoice] = useState('Male');
   const [showOptions, setShowOptions] = useState(false);
@@ -21,7 +21,7 @@ const PlayScreen = ({ route }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [playingChapter, setPlayingChapter] = useState(null);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  
+
   const translatedContentRef = useRef('');
 
   const handlePlayChapter = async (chapter, index) => {
@@ -44,6 +44,9 @@ const PlayScreen = ({ route }) => {
       } else {
         translatedContentRef.current = chapter.content;
       }
+
+      // Save to recently played
+      addToRecentlyPlayed(book);
 
       const words = translatedContentRef.current.split(' ');
       const options = {
@@ -153,7 +156,6 @@ const PlayScreen = ({ route }) => {
                   </Text>
                 </View>
               )}
-
             </View>
           ))}
         </ScrollView>
@@ -284,22 +286,23 @@ const styles = StyleSheet.create({
     color: 'white',
     marginVertical: 10,
   },
+  optionsContainer: {
+    padding: 10,
+    backgroundColor: '#1f2937',
+    borderRadius: 5,
+    position: 'absolute',
+    bottom: 70,
+    right: 10,
+    zIndex: 1,
+  },
   picker: {
     height: 50,
-    width: 150,
+    width: 200,
     color: 'white',
   },
   iconContainer: {
     position: 'absolute',
-    bottom: 50,
-    right: 20,
-  },
-  optionsContainer: {
-    position: 'absolute',
-    bottom: 100,
-    right: 20,
-    backgroundColor: '#1e293b',
-    borderRadius: 10,
-    padding: 10,
+    bottom: 10,
+    right: 10,
   },
 });

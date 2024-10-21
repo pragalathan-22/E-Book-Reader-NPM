@@ -1,26 +1,24 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, TextInput, Modal, Alert } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
-import { useNavigation } from '@react-navigation/native'; // Import navigation hook
-import { auth } from '../services/firebase'; // Ensure this is the correct path to your Firebase setup
-import { signOut } from 'firebase/auth'; // Import the signOut function
+import { useNavigation } from '@react-navigation/native';
+import { auth } from '../services/firebase';
+import { signOut } from 'firebase/auth';
+import { BookContext } from '../context/BookContext'; // Ensure this is the correct path to your BookContext
 
 const ProfileScreen = () => {
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150');
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState('Prag');
   const [email, setEmail] = useState('abc.com');
-  const [modalVisible, setModalVisible] = useState(false); // Modal for editing
-  const [fullImageModalVisible, setFullImageModalVisible] = useState(false); // Modal for full-size image
-
-  const navigation = useNavigation(); // Hook to navigate
-
-  const recentlySavedBooks = [
-    { title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', cover: 'https://via.placeholder.com/100' },
-    { title: '1984', author: 'George Orwell', cover: 'https://via.placeholder.com/100' },
-    { title: 'Moby Dick', author: 'Herman Melville', cover: 'https://via.placeholder.com/100' }
-  ];
+  const [modalVisible, setModalVisible] = useState(false);
+  const [fullImageModalVisible, setFullImageModalVisible] = useState(false);
+  
+  const navigation = useNavigation();
+  
+  // Accessing the BookContext
+  const { recentlyPlayedBooks, addToRecentlyPlayed } = useContext(BookContext);
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -34,7 +32,7 @@ const ProfileScreen = () => {
     
     if (!result.canceled) {
       setProfileImage(result.assets[0].uri);
-      setModalVisible(false); // Close modal after image selection
+      setModalVisible(false);
     }
   };
 
@@ -43,18 +41,22 @@ const ProfileScreen = () => {
   };
 
   const openModal = () => {
-    setModalVisible(true); // Open modal on image click
+    setModalVisible(true);
   };
 
   const openFullImageModal = () => {
-    setFullImageModalVisible(true); // Open full-size image modal
+    setFullImageModalVisible(true);
   };
 
-  // Function to handle Logout
+  const playBook = (book) => {
+    addToRecentlyPlayed(book);
+    Alert.alert("Now Playing", `You are now playing ${book.title}`);
+  };
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigation.navigate('Login'); // Ensure you navigate to the Login screen or any other screen
+      navigation.navigate('Login');
       Alert.alert("Logged Out", "You have successfully logged out.");
     } catch (error) {
       console.error('Logout Error:', error);
@@ -66,7 +68,6 @@ const ProfileScreen = () => {
     <SafeAreaView style={styles.container}>
       <LinearGradient colors={["#334155", "#131624"]} style={styles.gradient}>
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-          
           {/* Profile Information */}
           <View style={styles.profileSection}>
             <TouchableOpacity onPress={openFullImageModal}>
@@ -105,15 +106,17 @@ const ProfileScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Recently Saved Books */}
+          {/* Recently Played Books */}
           <View style={styles.recentSection}>
             <Text style={styles.sectionTitle}>Recent Books</Text>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              {recentlySavedBooks.map((book, index) => (
+              {recentlyPlayedBooks.map((book, index) => (
                 <View key={index} style={styles.bookItem}>
-                  <Image source={{ uri: book.cover }} style={styles.bookCover} />
-                  <Text style={styles.bookTitle}>{book.title}</Text>
-                  <Text style={styles.bookAuthor}>{book.author}</Text>
+                  <TouchableOpacity onPress={() => playBook(book)}>
+                    <Image source={{ uri: book.image }} style={styles.bookCover} />
+                    <Text style={styles.bookTitle}>{book.title}</Text>
+                    <Text style={styles.bookAuthor}>{book.author}</Text>
+                  </TouchableOpacity>
                 </View>
               ))}
             </ScrollView>
@@ -122,23 +125,18 @@ const ProfileScreen = () => {
           {/* Additional Options */}
           <View style={styles.optionsSection}>
             <Text style={styles.sectionTitle}>Settings</Text>
-            {/* Account Settings */}
             <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('')}>
               <Text style={styles.optionText}>Account Settings</Text>
             </TouchableOpacity>
-            {/* App Preferences */}
             <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('AppPreferencesScreen')}>
               <Text style={styles.optionText}>App Preferences</Text>
             </TouchableOpacity>
-            {/* Help & Support */}
             <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('HelpSupport')}>
               <Text style={styles.optionText}>Help & Support</Text>
             </TouchableOpacity>
-            {/* History */}
             <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('')}>
               <Text style={styles.optionText}>History</Text>
             </TouchableOpacity>
-            {/* Logout */}
             <TouchableOpacity style={styles.optionItem} onPress={handleLogout}>
               <Text style={styles.optionText}>Logout</Text>
             </TouchableOpacity>
@@ -152,7 +150,7 @@ const ProfileScreen = () => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)} // Close modal on back press
+        onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -187,7 +185,7 @@ const ProfileScreen = () => {
         animationType="fade"
         transparent={true}
         visible={fullImageModalVisible}
-        onRequestClose={() => setFullImageModalVisible(false)} // Close modal on back press
+        onRequestClose={() => setFullImageModalVisible(false)}
       >
         <View style={styles.fullImageModalContainer}>
           <TouchableOpacity onPress={() => setFullImageModalVisible(false)} style={styles.fullImageModalBackground}>
@@ -198,9 +196,10 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </View>
       </Modal>
+
     </SafeAreaView>
   );
-}
+};
 
 export default ProfileScreen;
 
@@ -250,37 +249,6 @@ const styles = StyleSheet.create({
   uploadButton: {
     color: 'grey',
   },
-  statsSection: {
-    marginBottom: 30,
-    alignItems: 'center',
-  },
-  sectionTitle: {
-    color: 'white',
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '100%',
-  },
-  statBox: {
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 15,
-    borderRadius: 10,
-    marginHorizontal: 10,
-  },
-  statNumber: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  statLabel: {
-    color: 'lightgray',
-    fontSize: 16,
-  },
   recentSection: {
     marginBottom: 30,
   },
@@ -314,20 +282,19 @@ const styles = StyleSheet.create({
   },
   optionText: {
     color: 'white',
-    fontSize: 18, // Increased font size for options
-    lineHeight: 24, // Added line height for better spacing
+    fontSize: 16,
   },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     width: '80%',
-    backgroundColor: '#fff',
-    borderRadius: 10,
     padding: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
     alignItems: 'center',
   },
   modalProfileImage: {
@@ -338,24 +305,25 @@ const styles = StyleSheet.create({
   },
   modalInput: {
     width: '100%',
-    borderBottomWidth: 1,
-    borderColor: 'gray',
+    padding: 10,
     marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
   },
   modalButton: {
-    marginTop: 10,
-    backgroundColor: 'blue',
+    backgroundColor: '#4CAF50',
     padding: 10,
     borderRadius: 5,
   },
   modalButtonText: {
     color: 'white',
-    fontWeight: 'bold',
   },
   fullImageModalContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   fullImageModalBackground: {
     flex: 1,
@@ -363,8 +331,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   fullImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
+    width: '90%',
+    height: '90%',
+    borderRadius: 10,
+  },
+  sectionTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10, // Adjusted margin
   },
 });
