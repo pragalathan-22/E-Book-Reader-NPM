@@ -105,25 +105,6 @@ const ProfileScreen = () => {
             </TouchableOpacity>
           </View>
 
-          {/* User Stats */}
-          <View style={styles.statsSection}>
-            <Text style={styles.sectionTitle}>Your Statistics</Text>
-            <View style={styles.statsRow}>
-              <View style={styles.statBox}>
-                <Text style={styles.statNumber}>120</Text>
-                <Text style={styles.statLabel}>Books Read</Text>
-              </View>
-              <View style={styles.statBox}>
-                <Text style={styles.statNumber}>5</Text>
-                <Text style={styles.statLabel}>Current Reading</Text>
-              </View>
-              <View style={styles.statBox}>
-                <Text style={styles.statNumber}>32</Text>
-                <Text style={styles.statLabel}>Saved Books</Text>
-              </View>
-            </View>
-          </View>
-
           {/* Recently Saved Books */}
           <View style={styles.recentSection}>
             <Text style={styles.sectionTitle}>Recent Books</Text>

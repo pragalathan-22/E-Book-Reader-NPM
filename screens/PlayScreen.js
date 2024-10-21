@@ -1,17 +1,19 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Speech from 'expo-speech';
+import { BookContext } from '../context/BookContext';
 
 const translateText = async (text, targetLanguage) => {
   // Implement translation logic using a translation API.
-  return text;
+  return text; // Return the original text for now (replace with translation logic)
 };
 
 const PlayScreen = ({ route }) => {
   const { book } = route.params;
+  const { savedBooks, addBook, removeBook } = useContext(BookContext);
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [selectedVoice, setSelectedVoice] = useState('Male');
   const [showOptions, setShowOptions] = useState(false);
@@ -84,9 +86,20 @@ const PlayScreen = ({ route }) => {
   };
 
   const handleSaveBook = () => {
-    // Implement your logic to save the book, such as saving to a database or local storage
-    alert('Book saved successfully!'); // Placeholder for save functionality
+    if (!savedBooks.some((savedBook) => savedBook.id === book.id)) {
+      addBook(book); // Save the book to context
+      Alert.alert('Success', 'Book saved successfully!');
+    } else {
+      Alert.alert('Info', 'Book is already saved.');
+    }
   };
+
+  const handleUnsaveBook = () => {
+    removeBook(book.id); // Remove the book from context
+    Alert.alert('Success', 'Book removed from library.');
+  };
+
+  const isBookSaved = savedBooks.some((savedBook) => savedBook.id === book.id);
 
   return (
     <View style={styles.container}>
@@ -98,8 +111,11 @@ const PlayScreen = ({ route }) => {
         <ScrollView style={styles.textContainer}>
           <View style={styles.bookHeader}>
             <Text style={styles.bookTitle}>{book.title}</Text>
-            <TouchableOpacity onPress={handleSaveBook} style={styles.saveIconContainer}>
-              <Icon name="bookmark-outline" size={24} color="white" />
+            <TouchableOpacity 
+              onPress={isBookSaved ? handleUnsaveBook : handleSaveBook} 
+              style={styles.saveIconContainer}
+            >
+              <Icon name={isBookSaved ? "bookmark" : "bookmark-outline"} size={24} color="white" />
             </TouchableOpacity>
           </View>
           <Text style={styles.bookAuthor}>{book.author}</Text>
@@ -266,29 +282,24 @@ const styles = StyleSheet.create({
   },
   label: {
     color: 'white',
-    fontSize: 16,
     marginVertical: 10,
   },
   picker: {
     height: 50,
-    width: '100%',
+    width: 150,
     color: 'white',
   },
   iconContainer: {
     position: 'absolute',
+    bottom: 50,
     right: 20,
-    top: 40,
-    zIndex: 1,
   },
   optionsContainer: {
-    padding: 15,
-    width: '50%',
-    backgroundColor: '#2D3748',
     position: 'absolute',
+    bottom: 100,
     right: 20,
-    top: 100,
+    backgroundColor: '#1e293b',
     borderRadius: 10,
-    zIndex: 1,
-    elevation: 5,
+    padding: 10,
   },
 });
