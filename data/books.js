@@ -188,5 +188,25 @@ export const booksData = [
       }
     ],
     suggestedBooks: ["The Canterville Ghost", "The Importance of Being Earnest"], // Suggested books
-  }
+  },
+  {
+    id: 11,
+    title: "பகவத் கீதை",
+    author: "வ்யாசர்",
+    description: "இது சமயத்தின் கருத்துகளை, தத்துவங்களை மற்றும் வாழ்க்கை பற்றிய முக்கியமான பாடங்களை எடுத்துரைக்கும் ஒரு இலக்கியம்.",
+    image: "https://picsum.photos/150/200?random=2",
+    authorImage: "https://dummyimage.com/100x100/cccccc/000000&text=வ்யாசர்",
+    chapters: [
+        {
+            title: "அத்தியாயம் 1: சஞ்சாரத்தின் சிதைவு",
+            content: "அர்ஜுனன் தனது உறவினர்களை எதிர்க்கலாம் என்ற சந்தேகத்தில் நிற்கிறது."
+        },
+        {
+            title: "அத்தியாயம் 2: அறிவு மற்றும் ஜ்ஞானம்",
+            content: "கீதையின் தத்துவங்கள் அறிவும், அறமும் மற்றும் உண்மையை அடைய உதவுகின்றன."
+        }
+    ],
+    suggestedBooks: ["திருக்குறள்", "சிலப்பதிகாரம்", "பரிபாடல்"] // Suggested books
+}
+
 ];

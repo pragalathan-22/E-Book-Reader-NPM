@@ -15,7 +15,7 @@ import { auth, db } from '../services/firebase';
 import { setDoc, doc } from 'firebase/firestore';
 
 // Background image URL (replace this with your book-related image URL)
-const backgroundImage = require('../assets/splash.png'); // Ensure you have this image in the mentioned path
+const backgroundImage = require('../assets/2.jpg'); // Ensure you have this image in the mentioned path
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
@@ -109,17 +109,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: 'rgba(240, 244, 248, 0.8)', // Add some opacity to the background
+    // backgroundColor: 'rgba(240, 244, 248, 0.8)', 
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
+    color:"white"
   },
   input: {
     width: '100%',
     padding: 12,
     marginVertical: 8,
-    backgroundColor: '#e2e8f0',
+    backgroundColor: '#fff',
     borderRadius: 8,
   },
   registerButton: {

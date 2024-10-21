@@ -206,11 +206,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bookContainer: {
-    width: '100%',
-    height: 300,
-    borderRadius: 5,
+    width: '50%', // Adjust width for a more rectangular shape
+    height: 300, // Make the height longer to resemble a book
+    borderRadius: 10,
     overflow: 'hidden',
     marginBottom: 20,
+    marginTop: 20, // Added marginTop to move the image down
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -223,9 +224,8 @@ const styles = StyleSheet.create({
   bookCover: {
     width: '100%',
     height: '100%',
-    borderRadius: 5,
-    position: 'absolute',
-    opacity: 0.2,
+    borderRadius: 10,
+    resizeMode: 'cover', // Keeps the image aspect ratio while filling the container
   },
   textContainer: {
     padding: 20,

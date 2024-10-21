@@ -269,9 +269,9 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   authorImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 80,
+    height: 80,
+    borderRadius: 50,
     borderWidth: 2,
     borderColor: "#ffffff",
   },
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     width: 120,
-    height: 200,
+    height: 250,
     elevation: 5,
   },
   cardImage: {

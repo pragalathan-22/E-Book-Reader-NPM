@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     },
     bookCover: { // Corrected from coverImage to bookCover
         width: '100%', // Full width of the item
-        height: 150,
+        height: 200,
         borderRadius: 5,
     },
     bookDetails: {

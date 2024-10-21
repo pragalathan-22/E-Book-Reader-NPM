@@ -20,6 +20,7 @@ import HelpSupportScreen from "./screens/HelpSupportScreen";
 import AppPreferencesScreen from "./screens/AppPreferencesScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import LilbraryScreen from "./screens/LilbraryScreen";
+import AccountSettingsScreen from "./screens/AccountSettingsScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -130,6 +131,7 @@ function Navigation() {
             <Stack.Screen name="HelpSupport" component={HelpSupportScreen} options={{ headerShown: false }} />
             <Stack.Screen name="AppPreferencesScreen" component={AppPreferencesScreen} options={{ headerShown: false }} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="AccountSettingsScreen" component={AccountSettingsScreen} options={{headerShown:false}}/>
         </Stack.Navigator>
     );
 }

@@ -1,7 +1,6 @@
 // screens/LoginScreen.js
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Pressable, Alert, TextInput } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { StyleSheet, Text, View, SafeAreaView, Pressable, Alert, TextInput, ImageBackground } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +9,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import * as Animatable from 'react-native-animatable';
+import { GoogleAuthProvider } from 'firebase/auth';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -20,7 +20,7 @@ const LoginScreen = () => {
 
   // Google Sign-In setup
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: '7511835637A12-46ojtmvu46ge8t1ev8eourtul83be87r.apps.googleusercontent.com', // Replace with your client ID
+    clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com', // Replace with your actual client ID
   });
 
   useEffect(() => {
@@ -47,8 +47,6 @@ const LoginScreen = () => {
   };
 
   const handleGoogleSignIn = async (idToken) => {
-    // Here you can use the idToken to sign in to your backend or Firebase
-    // For Firebase:
     const credential = GoogleAuthProvider.credential(idToken);
     try {
       const userCredential = await auth.signInWithCredential(credential);
@@ -61,10 +59,14 @@ const LoginScreen = () => {
   };
 
   return (
-    <LinearGradient colors={['#334155', '#131624']} style={{ flex: 1 }}>
+    <ImageBackground 
+      source={require('../assets/1.jpg')} // Replace with your image path if it's a local asset
+      style={styles.background} 
+      resizeMode="cover"
+    >
       <SafeAreaView>
         <View style={{ height: 80 }} />
-        <Entypo style={{ textAlign: 'center' }} name="open-book" size={80} color="white" />
+        <Entypo style={{ textAlign: 'center' }} name="open-book" size={75} color="white" />
         <Text style={styles.title}>Books are a uniquely portable magic.</Text>
         <View style={{ height: 80 }} />
 
@@ -107,24 +109,27 @@ const LoginScreen = () => {
         <View style={styles.footer}>
           <Text style={styles.footerText}>Don't have an account? </Text>
           <Pressable onPress={() => navigation.navigate('RegisterScreen')}>
-              <Text style={styles.footerLink}>Register here</Text>
-            </Pressable>
+            <Text style={styles.footerLink}>Register here</Text>
+          </Pressable>
         </View>
       </SafeAreaView>
-    </LinearGradient>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+  },
   title: {
     color: 'white',
-    fontSize: 40,
+    fontSize: 35,
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 40,
   },
   input: {
-    backgroundColor: '#e2e8f0',
+    backgroundColor: '#fff',
     padding: 10,
     marginVertical: 10,
     marginLeft: 'auto',
@@ -135,6 +140,7 @@ const styles = StyleSheet.create({
   signInButton: {
     backgroundColor: '#94a3b8',
     padding: 15,
+    marginTop:30,
     marginLeft: 'auto',
     marginRight: 'auto',
     width: 300,
@@ -157,6 +163,7 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     padding: 10,
+    marginTop:30,
     alignItems: 'center',
   },
   circleIcon: {

@@ -110,7 +110,7 @@ const ProfileScreen = () => {
           <View style={styles.recentSection}>
             <Text style={styles.sectionTitle}>Recent Books</Text>
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              {recentlyPlayedBooks.map((book, index) => (
+              {recentlyPlayedBooks.slice(-20).map((book, index) => (
                 <View key={index} style={styles.bookItem}>
                   <TouchableOpacity onPress={() => playBook(book)}>
                     <Image source={{ uri: book.image }} style={styles.bookCover} />
@@ -125,7 +125,7 @@ const ProfileScreen = () => {
           {/* Additional Options */}
           <View style={styles.optionsSection}>
             <Text style={styles.sectionTitle}>Settings</Text>
-            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('')}>
+            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('AccountSettingsScreen')}>
               <Text style={styles.optionText}>Account Settings</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('AppPreferencesScreen')}>
