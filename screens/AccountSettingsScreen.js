@@ -1,4 +1,5 @@
 // AccountSettingsScreen.js
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
@@ -18,32 +19,39 @@ const AccountSettingsScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Account Settings</Text>
+    <LinearGradient colors={["#334155", "#131624"]} style={styles.gradient}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Account Settings</Text>
 
-      {/* Toggle Notifications */}
-      <TouchableOpacity style={styles.option} onPress={toggleNotifications}>
-        <Text style={styles.optionText}>Notifications: {notificationsEnabled ? "On" : "Off"}</Text>
-      </TouchableOpacity>
+        {/* Toggle Notifications */}
+        <TouchableOpacity style={styles.option} onPress={toggleNotifications}>
+          <Text style={styles.optionText}>Notifications: {notificationsEnabled ? "On" : "Off"}</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity style={styles.option}>
-        <Text style={styles.optionText}>Privacy Settings</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.option}>
-        <Text style={styles.optionText}>Delete Account</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity style={styles.option}>
+          <Text style={styles.optionText}>Privacy Settings</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.option}>
+          <Text style={styles.optionText}>Theme</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.option}>
+          <Text style={styles.optionText}>Delete Account</Text>
+        </TouchableOpacity>
+      </View>
+    </LinearGradient>
   );
 };
 
 export default AccountSettingsScreen;
 
 const styles = StyleSheet.create({
+  gradient: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#131624',
   },
   title: {
     color: 'white',

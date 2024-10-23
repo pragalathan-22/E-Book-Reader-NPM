@@ -1,0 +1,14 @@
+{
+  "authorName": "John Doe",
+  "authorImage": "https://firebase.storage.com/.../authorImage.jpg",
+  "bookImage": "https://firebase.storage.com/.../bookImage.jpg",
+  "bookName": "Sample Book",
+  "chapters": [
+    {
+      "title": "Chapter 1",
+      "content": "This is the content of chapter 1."
+    }
+  ],
+  "description": "This is a brief description of the book.",
+  "suggestion": "Some suggestion for the book."
+}

@@ -1,9 +1,41 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { booksData } from '../data/books'; // Import the books data
+import { db } from '../services/firebase'; // Import the Firebase configuration
+import { collection, getDocs } from 'firebase/firestore'; // Firestore functions
 
 const SeeMoreScreen = ({ navigation }) => {
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch books from Firestore on component mount
+  useEffect(() => {
+    const fetchBooks = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, 'books')); // Replace 'books' with your Firestore collection name
+        const booksData = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setBooks(booksData);
+      } catch (error) {
+        console.error('Error fetching books: ', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBooks();
+  }, []);
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient colors={['#334155', '#131624']} style={styles.gradient}>
@@ -16,15 +48,15 @@ const SeeMoreScreen = ({ navigation }) => {
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
           <Text style={styles.sectionTitle}>More Books</Text>
           <View style={styles.booksContainer}>
-            {booksData.map((book, index) => (
+            {books.map((book) => (
               <TouchableOpacity
-                key={index}
+                key={book.id}
                 style={styles.bookItem}
-                onPress={() => navigation.navigate('PlayScreen', { book })} // Navigate to PlayScreen with book data
+                onPress={() => navigation.navigate('PlayScreen', { book })} // Pass the entire book object
               >
-                <Image source={{ uri: book.image }} style={styles.bookCover} />
-                <Text style={styles.bookTitle}>{book.title}</Text>
-                <Text style={styles.bookAuthor}>{book.author}</Text>
+                <Image source={{ uri: book.bookImage }} style={styles.bookCover} resizeMode="cover" />
+                <Text style={styles.bookTitle}>{book.bookName}</Text>
+                <Text style={styles.bookAuthor}>{book.description}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -97,5 +129,11 @@ const styles = StyleSheet.create({
   bookAuthor: {
     color: 'gray',
     fontSize: 14,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#131624',
   },
 });

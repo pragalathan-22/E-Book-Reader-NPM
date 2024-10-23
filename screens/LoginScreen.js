@@ -24,6 +24,16 @@ const LoginScreen = () => {
   });
 
   useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigation.navigate('Main'); // Navigate to the main screen if the user is authenticated
+      }
+    });
+
+    return () => unsubscribe(); // Clean up the subscription on unmount
+  }, [navigation]);
+
+  useEffect(() => {
     if (response?.type === 'success') {
       const { id_token } = response.params;
       handleGoogleSignIn(id_token);
@@ -39,7 +49,7 @@ const LoginScreen = () => {
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User signed in:', userCredential.user);
-      navigation.navigate('Main'); // Ensure 'Main' is a valid route in your navigation
+      navigation.navigate('Main'); // Navigate to Main screen
     } catch (error) {
       console.error('Error signing in with email:', error);
       Alert.alert('Login Failed', error.message);

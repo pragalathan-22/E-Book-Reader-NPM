@@ -3,36 +3,30 @@ import React, { createContext, useState } from 'react';
 export const BookContext = createContext();
 
 export const BookProvider = ({ children }) => {
-    const [savedBooks, setSavedBooks] = useState([]);
-    const [recentlyPlayedBooks, setRecentlyPlayedBooks] = useState([]);
+  const [savedBooks, setSavedBooks] = useState([]);
+  const [recentlyPlayedBooks, setRecentlyPlayedBooks] = useState([]);
 
-    const addBook = (book) => {
-        setSavedBooks((prevBooks) => [...prevBooks, book]);
-    };
+  const addBook = (book) => {
+    setSavedBooks((prevBooks) => [...prevBooks, book]);
+  };
 
-    const removeBook = (bookId) => {
-        setSavedBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
-    };
+  const removeBook = (id) => {
+    setSavedBooks((prevBooks) => prevBooks.filter((book) => book.id !== id));
+  };
 
-    const addToRecentlyPlayed = (book) => {
-        setRecentlyPlayedBooks((prevBooks) => {
-            const bookExists = prevBooks.some((b) => b.id === book.id);
-            if (!bookExists) {
-                return [book, ...prevBooks].slice(0, 5); // Limit to 5 recent books
-            }
-            return prevBooks;
-        });
-    };
+  const addToRecentlyPlayed = (book) => {
+    setRecentlyPlayedBooks((prevBooks) => {
+      const existingIndex = prevBooks.findIndex((b) => b.id === book.id);
+      if (existingIndex !== -1) {
+        return prevBooks; // Book already exists, do not add again
+      }
+      return [...prevBooks, book];
+    });
+  };
 
-    return (
-        <BookContext.Provider value={{ 
-            savedBooks, 
-            addBook, 
-            removeBook, 
-            recentlyPlayedBooks, 
-            addToRecentlyPlayed 
-        }}>
-            {children}
-        </BookContext.Provider>
-    );
+  return (
+    <BookContext.Provider value={{ savedBooks, addBook, removeBook, recentlyPlayedBooks, addToRecentlyPlayed }}>
+      {children}
+    </BookContext.Provider>
+  );
 };

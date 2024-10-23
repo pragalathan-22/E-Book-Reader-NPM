@@ -14,24 +14,36 @@ import {
   TouchableWithoutFeedback,
   FlatList,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native"; // Import useNavigation hook
-import { booksData } from '../data/books'; // Import your books data
+import { useNavigation } from "@react-navigation/native";
+import { db } from '../services/firebase';
+import { collection, getDocs } from "firebase/firestore";
 
 const HomeScreen = () => {
-  const navigation = useNavigation(); // Get the navigation object
+  const navigation = useNavigation();
   const [searchText, setSearchText] = useState("");
-  const [filteredBooks, setFilteredBooks] = useState([]); // State for filtered books
+  const [filteredBooks, setFilteredBooks] = useState([]);
+  const [booksData, setBooksData] = useState([]);
 
-  // Function to handle search
+  const fetchBooks = async () => {
+    const booksCollection = collection(db, 'books');
+    const booksSnapshot = await getDocs(booksCollection);
+    const booksList = booksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setBooksData(booksList);
+  };
+
+  useEffect(() => {
+    fetchBooks();
+  }, []);
+
   const handleSearch = (text) => {
     setSearchText(text);
     if (text.trim() !== "") {
       const filtered = booksData.filter((book) =>
-        book.title.toLowerCase().includes(text.toLowerCase()) || // Filter by title
-        book.author.toLowerCase().includes(text.toLowerCase()) // Filter by author
+        book.bookName.toLowerCase().includes(text.toLowerCase()) ||
+        book.authorName.toLowerCase().includes(text.toLowerCase())
       );
       setFilteredBooks(filtered);
     } else {
@@ -39,11 +51,10 @@ const HomeScreen = () => {
     }
   };
 
-  // Function to handle book selection from auto-suggestions
   const handleBookSelect = (book) => {
     navigation.navigate("PlayScreen", { book });
-    setSearchText(""); // Clear search text after selection
-    setFilteredBooks([]); // Clear filtered books after selection
+    setSearchText("");
+    setFilteredBooks([]);
   };
 
   return (
@@ -55,17 +66,16 @@ const HomeScreen = () => {
           keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
         >
           <SafeAreaView style={styles.safeArea}>
-            {/* Header Section with Search and Menu */}
             <View style={styles.header}>
               <TextInput
                 style={styles.searchInput}
                 placeholder="Search for books..."
                 placeholderTextColor="white"
                 value={searchText}
-                onChangeText={handleSearch} // Update search text and filter books
+                onChangeText={handleSearch}
                 onSubmitEditing={() => {
                   if (filteredBooks.length > 0) {
-                    handleBookSelect(filteredBooks[0]); // Select the first filtered book on "Enter"
+                    handleBookSelect(filteredBooks[0]);
                   }
                 }}
               />
@@ -73,7 +83,7 @@ const HomeScreen = () => {
                 style={styles.searchButton}
                 onPress={() => {
                   if (filteredBooks.length > 0) {
-                    handleBookSelect(filteredBooks[0]); // Select the first filtered book when the button is pressed
+                    handleBookSelect(filteredBooks[0]);
                   }
                 }}
               >
@@ -81,7 +91,6 @@ const HomeScreen = () => {
               </TouchableOpacity>
             </View>
 
-            {/* Auto-suggest results */}
             {searchText.length > 0 && (
               <FlatList
                 data={filteredBooks}
@@ -91,16 +100,14 @@ const HomeScreen = () => {
                     style={styles.suggestionItem}
                     onPress={() => handleBookSelect(item)}
                   >
-                    <Text style={styles.suggestionText}>{item.title}</Text>
+                    <Text style={styles.suggestionText}>{item.bookName}</Text>
                   </TouchableOpacity>
                 )}
                 style={styles.suggestionList}
               />
             )}
 
-            {/* Scrollable Content Section */}
             <ScrollView contentContainerStyle={[styles.scrollContainer, { paddingBottom: 80 }]}>
-              {/* Scrollable Authors Section */}
               <Text style={styles.sectionTitle}>Authors</Text>
               <ScrollView
                 horizontal
@@ -112,12 +119,11 @@ const HomeScreen = () => {
                 {booksData.map((book) => (
                   <AuthorProfile 
                     key={book.id}
-                    name={book.author}
-                    authorImage={book.authorImage} // Pass the author's image URL
-                    onPress={() => navigation.navigate('AuthorBooksScreen', { authorName: book.author })} // Navigate to AuthorBooksScreen
+                    name={book.authorName}
+                    authorImage={book.authorImage}
+                    onPress={() => navigation.navigate('AuthorBooksScreen', { authorName: book.authorName })}
                   />
                 ))}
-
                 <TouchableOpacity
                   style={styles.seeMoreButton}
                   onPress={() => navigation.navigate("AuthorPage")}
@@ -126,7 +132,6 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </ScrollView>
 
-              {/* Scrollable Trending Clips Section */}
               <Text style={styles.sectionTitle}>Trending Clips</Text>
               <ScrollView
                 horizontal
@@ -136,10 +141,10 @@ const HomeScreen = () => {
                 {booksData.slice(0, 4).map((book, index) => (
                   <ClipCard 
                     key={index} 
-                    title={book.title} 
-                    image={book.image} 
-                    book={book} // Pass the book object to ClipCard
-                    navigation={navigation} // Pass navigation object to ClipCard
+                    title={book.bookName} 
+                    image={book.bookImage} 
+                    book={book}
+                    navigation={navigation}
                   />
                 ))}
                 <TouchableOpacity
@@ -150,7 +155,6 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </ScrollView>
 
-              {/* Scrollable Suggestions Section */}
               <Text style={styles.sectionTitle}>Suggestions</Text>
               <ScrollView
                 horizontal
@@ -160,13 +164,12 @@ const HomeScreen = () => {
                 {booksData.slice(0, 4).map((book, index) => (
                   <ClipCard 
                     key={index} 
-                    title={book.title} 
-                    image={book.image} 
-                    book={book} // Pass the book object to ClipCard
-                    navigation={navigation} // Pass navigation object to ClipCard
+                    title={book.bookName} 
+                    image={book.bookImage} 
+                    book={book}
+                    navigation={navigation}
                   />
                 ))}
-
                 <TouchableOpacity
                   style={styles.seeMoreButton}
                   onPress={() => navigation.navigate("SeeMore")}
