@@ -1,49 +1,304 @@
-import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
-import { useRoute } from "@react-navigation/native";
+import React, { useState, useRef, useContext } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/Ionicons';
+import * as Speech from 'expo-speech';
+import { BookContext } from '../context/BookContext';
 
-const PlayScreen = () => {
-  const route = useRoute();
-  const { book } = route.params; // Get the book data from the route params
+const translateText = async (text, targetLanguage) => {
+  // Dummy translation function, implement with a real translation API if needed.
+  return targetLanguage !== 'English' ? `Translated (${targetLanguage}): ${text}` : text;
+};
+
+const PlayScreen = ({ route }) => {
+  const { book } = route.params;
+  const { savedBooks, addBook, removeBook, addToRecentlyPlayed } = useContext(BookContext);
+  const [selectedLanguage, setSelectedLanguage] = useState('English');
+  const [selectedVoice, setSelectedVoice] = useState('Male');
+  const [showOptions, setShowOptions] = useState(false);
+  const [expandedChapter, setExpandedChapter] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playingChapter, setPlayingChapter] = useState(null);
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+
+  const translatedContentRef = useRef('');
+
+  // Convert chapters from object to array
+  const chaptersArray = book.chapters ? Object.values(book.chapters) : [];
+
+  const handlePlayChapter = async (chapter, index) => {
+    if (playingChapter !== null && playingChapter !== index) {
+      Speech.stop();
+      setIsPlaying(false);
+      setPlayingChapter(null);
+      setCurrentWordIndex(0);
+    }
+
+    if (playingChapter === index) {
+      Speech.stop();
+      setIsPlaying(false);
+      setPlayingChapter(null);
+      setCurrentWordIndex(0);
+      setExpandedChapter(null);
+    } else {
+      if (selectedLanguage !== 'English' && translatedContentRef.current === '') {
+        translatedContentRef.current = await translateText(chapter.content, selectedLanguage);
+      } else {
+        translatedContentRef.current = chapter.content;
+      }
+
+      addToRecentlyPlayed(book);
+
+      const words = translatedContentRef.current.split(' ');
+      const options = {
+        language: selectedLanguage === 'English' ? 'en' : 'ta',
+        pitch: selectedVoice === 'Male' ? 1 : 1.2,
+        rate: 0.7,
+        onStart: () => setCurrentWordIndex(0),
+        onDone: () => {
+          setIsPlaying(false);
+          setPlayingChapter(null);
+          setExpandedChapter(null);
+          setCurrentWordIndex(0);
+        },
+        onStopped: () => {
+          setIsPlaying(false);
+          setPlayingChapter(null);
+          setExpandedChapter(null);
+          setCurrentWordIndex(0);
+        },
+      };
+
+      Speech.speak(translatedContentRef.current, options);
+
+      setIsPlaying(true);
+      setPlayingChapter(index);
+      setExpandedChapter(index);
+
+      const wordHighlightInterval = setInterval(() => {
+        if (currentWordIndex < words.length) {
+          setCurrentWordIndex((prevIndex) => prevIndex + 1);
+        } else {
+          clearInterval(wordHighlightInterval);
+        }
+      }, 500);
+
+      return () => clearInterval(wordHighlightInterval);
+    }
+  };
+
+  const handleSaveBook = () => {
+    if (!savedBooks.some((savedBook) => savedBook.id === book.id)) {
+      addBook(book);
+      Alert.alert('Success', 'Book saved successfully!');
+    } else {
+      Alert.alert('Info', 'Book is already saved.');
+    }
+  };
+
+  const handleUnsaveBook = () => {
+    removeBook(book.id);
+    Alert.alert('Success', 'Book removed from library.');
+  };
+
+  const isBookSaved = savedBooks.some((savedBook) => savedBook.id === book.id);
 
   return (
     <View style={styles.container}>
-      {/* Display book details */}
-      <Image source={{ uri: book.bookImage }} style={styles.image} />
-      <Text style={styles.title}>{book.bookName}</Text>
-      <Text style={styles.author}>{book.authorName}</Text>
-      <Text style={styles.description}>{book.description}</Text>
-      {/* Add other book details you want to display */}
+      <LinearGradient colors={['#334155', '#131624']} style={styles.gradient}>
+        <View style={styles.bookContainer}>
+          <Image source={{ uri: book.bookImage }} style={styles.bookCover} />
+        </View>
+
+        <ScrollView style={styles.textContainer}>
+          <View style={styles.bookHeader}>
+            <Text style={styles.bookTitle}>{book.bookName}</Text>
+            <TouchableOpacity onPress={isBookSaved ? handleUnsaveBook : handleSaveBook} style={styles.saveIconContainer}>
+              <Icon name={isBookSaved ? 'bookmark' : 'bookmark-outline'} size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.bookAuthor}>{book.authorName}</Text>
+          <Text style={styles.bookDescription}>{book.description}</Text>
+
+          {chaptersArray.map((chapter, index) => (
+            <View key={index} style={styles.chapterContainer}>
+              <TouchableOpacity onPress={() => setExpandedChapter(expandedChapter === index ? null : index)} style={styles.chapterHeader}>
+                <Text style={styles.chapterTitle}>{chapter.title}</Text>
+                <TouchableOpacity
+                  style={styles.circularPlayButton}
+                  onPress={() => handlePlayChapter(chapter, index)}
+                >
+                  <Icon
+                    name={isPlaying && playingChapter === index ? 'stop' : 'play'}
+                    size={20}
+                    color="#ffffff"
+                  />
+                </TouchableOpacity>
+              </TouchableOpacity>
+
+              {expandedChapter === index && (
+                <View>
+                  <Text style={styles.chapterContent}>
+                    {translatedContentRef.current.split(' ').map((word, i) => (
+                      <Text
+                        key={i}
+                        style={{
+                          color: currentWordIndex === i ? 'yellow' : 'white',
+                        }}
+                      >
+                        {word}{' '}
+                      </Text>
+                    ))}
+                  </Text>
+                </View>
+              )}
+            </View>
+          ))}
+        </ScrollView>
+
+        <TouchableOpacity onPress={() => setShowOptions(!showOptions)} style={styles.iconContainer}>
+          <Icon name="settings-outline" size={30} color="white" />
+        </TouchableOpacity>
+
+        {showOptions && (
+          <View style={styles.optionsContainer}>
+            <Text style={styles.label}>Select Language:</Text>
+            <Picker
+              selectedValue={selectedLanguage}
+              style={styles.picker}
+              onValueChange={(itemValue) => setSelectedLanguage(itemValue)}
+              dropdownIconColor="white"
+            >
+              <Picker.Item label="English" value="English" />
+              <Picker.Item label="Tamil" value="Tamil" />
+            </Picker>
+
+            <Text style={styles.label}>Select Voice:</Text>
+            <Picker
+              selectedValue={selectedVoice}
+              style={styles.picker}
+              onValueChange={(itemValue) => setSelectedVoice(itemValue)}
+              dropdownIconColor="white"
+            >
+              <Picker.Item label="Male" value="Male" />
+              <Picker.Item label="Female" value="Female" />
+            </Picker>
+          </View>
+        )}
+      </LinearGradient>
     </View>
   );
 };
 
+export default PlayScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    backgroundColor: "#131624",
+    backgroundColor: '#131624',
   },
-  image: {
-    width: "100%",
+  gradient: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  bookContainer: {
+    width: '50%',
     height: 300,
-    borderRadius: 8,
+    borderRadius: 10,
+    overflow: 'hidden',
+    marginBottom: 20,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
   },
-  title: {
-    fontSize: 24,
-    color: "#ffffff",
-    fontWeight: "bold",
-    marginVertical: 10,
+  bookCover: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
+    resizeMode: 'cover',
   },
-  author: {
-    fontSize: 18,
-    color: "#ffffff",
+  textContainer: {
+    padding: 20,
+    width: '100%',
   },
-  description: {
-    fontSize: 16,
-    color: "#ffffff",
+  bookHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  bookTitle: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
     marginTop: 10,
   },
+  saveIconContainer: {
+    marginLeft: 10,
+  },
+  bookAuthor: {
+    color: 'gray',
+    fontSize: 18,
+  },
+  bookDescription: {
+    color: 'white',
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  chapterContainer: {
+    marginVertical: 10,
+  },
+  chapterHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  chapterTitle: {
+    fontSize: 22,
+    color: '#42f5ef',//
+  },
+  circularPlayButton: {
+    borderRadius: 50,
+    backgroundColor: '#42f5ef',
+    padding: 5,
+  },
+  chapterContent: {
+    color: 'white',
+    fontSize: 20,
+    marginTop:15,
+  },
+  iconContainer: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: 'rgba(52, 52, 52, 0.5)',
+    borderRadius: 30,
+    padding: 10,
+  },
+  optionsContainer: {
+    position: 'absolute',
+    bottom: 80,
+    right: 20,
+    backgroundColor: 'rgba(52, 52, 52, 0.9)',
+    borderRadius: 10,
+    padding: 10,
+    width: 200,
+    zIndex: 100,
+  },
+  label: {
+    color: 'white',
+    marginBottom: 5,
+  },
+  picker: {
+    height: 50,
+    width: '100%',
+    color: 'white',
+    backgroundColor: '#1f2937',
+  },
 });
-
-export default PlayScreen;

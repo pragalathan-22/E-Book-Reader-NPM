@@ -57,6 +57,20 @@ const HomeScreen = () => {
     setFilteredBooks([]);
   };
 
+  // Function to get unique authors
+  const getUniqueAuthors = (books) => {
+    const authorSet = new Set();
+    return books.filter(book => {
+      if (!authorSet.has(book.authorName)) {
+        authorSet.add(book.authorName);
+        return true;
+      }
+      return false;
+    });
+  };
+
+  const uniqueAuthors = getUniqueAuthors(booksData);
+
   return (
     <LinearGradient colors={["#334155", "#131624"]} style={styles.gradient}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -116,7 +130,7 @@ const HomeScreen = () => {
                 style={{ paddingHorizontal: 16 }}
                 decelerationRate="fast"
               >
-                {booksData.map((book) => (
+                {uniqueAuthors.map((book) => (
                   <AuthorProfile 
                     key={book.id}
                     name={book.authorName}
@@ -299,42 +313,38 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   cardCover: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     padding: 5,
   },
   cardTitle: {
-    fontSize: 18, // Increased font size for the title
     color: "#ffffff",
-    textAlign: "center", // Center-aligned text
+    fontWeight: "500",
+    textAlign: "center",
   },
   seeMoreButton: {
-      backgroundColor: "#2b394b",
-      borderRadius: 20,
-      padding: 10,
-      alignItems: "center",
-      justifyContent: "center",
-      marginLeft: 10,
-    },
-    seeMoreText: {
-      color: "#ffffff",
-      fontWeight: "600",
-    },
-
-  suggestionsContainer: {
-    backgroundColor: "#1e293b",
-    borderRadius: 8,
-    maxHeight: 150,
-    marginTop: 10,
-    position: "absolute",
-    zIndex: 1000,
-    width: "100%",
+    padding: 10,
+    marginVertical: 10,
+    alignItems: "center",
+  },
+  seeMoreText: {
+    color: "#ffffff",
+    fontSize: 16,
   },
   suggestionItem: {
     padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
   suggestionText: {
     color: "#ffffff",
+  },
+  suggestionList: {
+    position: "absolute",
+    top: 60,
+    width: "100%",
+    backgroundColor: "#1e293b",
+    borderRadius: 8,
+    elevation: 5,
+    maxHeight: 150,
+    zIndex: 1,
   },
 });

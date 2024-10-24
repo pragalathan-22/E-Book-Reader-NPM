@@ -56,7 +56,7 @@ const SeeMoreScreen = ({ navigation }) => {
               >
                 <Image source={{ uri: book.bookImage }} style={styles.bookCover} resizeMode="cover" />
                 <Text style={styles.bookTitle}>{book.bookName}</Text>
-                <Text style={styles.bookAuthor}>{book.description}</Text>
+                {/* <Text style={styles.bookAuthor}>{book.description}</Text> */}
               </TouchableOpacity>
             ))}
           </View>

@@ -25,10 +25,14 @@ const LibraryScreen = () => {
                                     style={styles.bookItem} 
                                     onPress={() => handleBookPress(book)}
                                 >
-                                    <Image source={{ uri: book.image }} style={styles.bookCover} />
+                                    {book.bookImage ? (
+                                        <Image source={{ uri: book.bookImage }} style={styles.bookCover} />
+                                    ) : (
+                                        <View style={styles.placeholderImage} />
+                                    )}
                                     <View style={styles.bookDetails}>
-                                        <Text style={styles.bookTitle}>{book.title}</Text>
-                                        <Text style={styles.bookAuthor}>{book.author}</Text>
+                                        <Text style={styles.bookTitle}>{book.bookName || 'Untitled'}</Text>
+                                        <Text style={styles.bookAuthor}>{book.authorName || 'Unknown Author'}</Text>
                                     </View>
                                 </TouchableOpacity>
                             ))}
@@ -76,10 +80,16 @@ const styles = StyleSheet.create({
         padding: 10,
         elevation: 2, // Add shadow effect
     },
-    bookCover: { // Corrected from coverImage to bookCover
+    bookCover: {
         width: '100%', // Full width of the item
         height: 200,
         borderRadius: 5,
+    },
+    placeholderImage: {
+        width: '100%',
+        height: 200,
+        borderRadius: 5,
+        backgroundColor: '#gray', // Placeholder background
     },
     bookDetails: {
         marginTop: 5, // Space between the image and text

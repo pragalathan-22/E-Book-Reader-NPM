@@ -14,7 +14,7 @@ import PlayScreen from './screens/PlayScreen';
 import SearchResultsScreen from "./screens/SearchResultsScreen";
 import AuthorPage from "./screens/AuthorPage";
 import AuthorBooksScreen from "./screens/AuthorBooksScreen";
-import SavedBooks from "./screens/SavedBooks";
+
 import ImportPlayScreen from "./screens/ImportPlayScreen";
 import HelpSupportScreen from "./screens/HelpSupportScreen";
 import AppPreferencesScreen from "./screens/AppPreferencesScreen";
@@ -125,8 +125,7 @@ function Navigation() {
             <Stack.Screen name="PlayScreen" component={PlayScreen} options={{ headerShown: false }} />
             <Stack.Screen name="SearchResults" component={SearchResultsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="AuthorPage" component={AuthorPage} options={{ headerShown: false }} />
-            <Stack.Screen name="AuthorBooksScreen" component={AuthorBooksScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="SavedBooks" component={SavedBooks} options={{ headerShown: false }} />
+            <Stack.Screen name="AuthorBooksScreen" component={AuthorBooksScreen} options={{ headerShown: false }} />   
             <Stack.Screen name="ImportPlayScreen" component={ImportPlayScreen} options={{ headerShown: false }} />
             <Stack.Screen name="HelpSupport" component={HelpSupportScreen} options={{ headerShown: false }} />
             <Stack.Screen name="AppPreferencesScreen" component={AppPreferencesScreen} options={{ headerShown: false }} />

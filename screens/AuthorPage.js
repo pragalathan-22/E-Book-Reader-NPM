@@ -1,27 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { booksData } from "../data/books"; // Import the booksData array
+import { db } from '../services/firebase'; // Ensure you have the correct path for your firebase config
+import { collection, getDocs } from "firebase/firestore";
 
 const AuthorPage = () => {
   const navigation = useNavigation();
+  const [authorsData, setAuthorsData] = useState([]);
 
-  // Extract unique authors from booksData
-  const uniqueAuthors = Array.from(
-    new Set(booksData.map(book => book.author))
-  ).map(authorName => {
-    const book = booksData.find(book => book.author === authorName);
-    return {
-      name: authorName,
-      imageUrl: book.authorImage,
-    };
-  });
+  const fetchAuthors = async () => {
+    const booksCollection = collection(db, 'books'); // Assuming your books data is here
+    const booksSnapshot = await getDocs(booksCollection);
+    const booksList = booksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
+    // Extract unique authors
+    const uniqueAuthors = Array.from(
+      new Set(booksList.map(book => book.authorName))
+    ).map(authorName => {
+      const book = booksList.find(book => book.authorName === authorName);
+      return {
+        name: authorName,
+        imageUrl: book.authorImage, // Make sure you have this field in your book data
+      };
+    });
+
+    setAuthorsData(uniqueAuthors);
+  };
+
+  useEffect(() => {
+    fetchAuthors();
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Authors</Text>
       <ScrollView contentContainerStyle={styles.authorsContainer}>
-        {uniqueAuthors.map((author, index) => (
+        {authorsData.map((author, index) => (
           <TouchableOpacity
             key={index}
             style={styles.authorProfile}

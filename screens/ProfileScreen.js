@@ -50,7 +50,7 @@ const ProfileScreen = () => {
 
   const playBook = (book) => {
     addToRecentlyPlayed(book);
-    Alert.alert("Now Playing", `You are now playing ${book.title}`);
+    navigation.navigate('PlayScreen', { book }); // Navigate to PlayScreen with book details
   };
 
   const handleLogout = async () => {
@@ -113,9 +113,9 @@ const ProfileScreen = () => {
               {recentlyPlayedBooks.slice(-20).map((book, index) => (
                 <View key={index} style={styles.bookItem}>
                   <TouchableOpacity onPress={() => playBook(book)}>
-                    <Image source={{ uri: book.image }} style={styles.bookCover} />
-                    <Text style={styles.bookTitle}>{book.title}</Text>
-                    <Text style={styles.bookAuthor}>{book.author}</Text>
+                    <Image source={{ uri: book.bookImage }} style={styles.bookCover} />
+                    <Text style={styles.bookTitle}>{book.bookName}</Text>
+                    <Text style={styles.bookAuthor}>{book.authorName}</Text>
                   </TouchableOpacity>
                 </View>
               ))}
@@ -252,13 +252,13 @@ const styles = StyleSheet.create({
   recentSection: {
     marginBottom: 30,
   },
-  bookItem: {
+ bookItem: {
     alignItems: 'center',
     marginRight: 15,
   },
   bookCover: {
-    width: 80,
-    height: 120,
+    width: 80, // Adjust the width as needed
+    height: 120, // Adjust the height as needed
     borderRadius: 5,
     marginBottom: 5,
   },
@@ -266,10 +266,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 14, // Set a font size that fits well with the cover size
+    maxWidth: 80, // Limit the width of the title to align with the cover width
+    overflow: 'hidden', // Hide overflow text
+    textOverflow: 'ellipsis', // Add ellipsis for overflowing text
   },
   bookAuthor: {
     color: 'lightgray',
     textAlign: 'center',
+    fontSize: 12, // Adjust as necessary
   },
   optionsSection: {
     marginBottom: 30,
@@ -284,6 +289,13 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
+  sectionTitle: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginVertical: 10,
+    marginLeft: 10,
+  },
   modalContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -291,10 +303,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    width: '80%',
-    padding: 20,
     backgroundColor: 'white',
+    padding: 20,
     borderRadius: 10,
+    width: '80%',
     alignItems: 'center',
   },
   modalProfileImage: {
@@ -304,12 +316,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   modalInput: {
-    width: '100%',
-    padding: 10,
-    marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: 'grey',
+    padding: 10,
     borderRadius: 5,
+    width: '100%',
+    marginBottom: 10,
   },
   modalButton: {
     backgroundColor: '#4CAF50',
@@ -333,12 +345,6 @@ const styles = StyleSheet.create({
   fullImage: {
     width: '90%',
     height: '90%',
-    borderRadius: 10,
-  },
-  sectionTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10, // Adjusted margin
+    resizeMode: 'contain',
   },
 });
