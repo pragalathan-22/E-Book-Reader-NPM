@@ -1,136 +1,132 @@
-import React, { useEffect, useState } from "react";
+// SearchScreen.js
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
+  TextInput,
+  FlatList,
   TouchableOpacity,
-  Image,
+  Text,
+  StyleSheet,
+  View,
 } from "react-native";
-import { useRoute } from "@react-navigation/native";
-import { LinearGradient } from "expo-linear-gradient";
-import { booksData } from "../data/books"; // Replace with actual path
+import { Ionicons } from "@expo/vector-icons";
+import { db } from "../services/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
 
-const SearchResultsScreen = ({ navigation }) => { // Added navigation prop
-  const route = useRoute();
-  const { query } = route.params;
+const SearchScreen = () => {
+  const navigation = useNavigation();
+  const [searchText, setSearchText] = useState("");
   const [filteredBooks, setFilteredBooks] = useState([]);
+  const [booksData, setBooksData] = useState([]);
 
   useEffect(() => {
-    if (query) {
-      const results = booksData.filter((book) =>
-        book.title.toLowerCase().includes(query.toLowerCase())
+    const fetchBooks = async () => {
+      const booksCollection = collection(db, "books");
+      const booksSnapshot = await getDocs(booksCollection);
+      const booksList = booksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setBooksData(booksList);
+    };
+
+    fetchBooks();
+  }, []);
+
+  const handleSearch = (text) => {
+    setSearchText(text);
+    if (text.trim() !== "") {
+      const filtered = booksData.filter(book =>
+        book.bookName.toLowerCase().includes(text.toLowerCase()) ||
+        book.authorName.toLowerCase().includes(text.toLowerCase())
       );
-      setFilteredBooks(results);
+      setFilteredBooks(filtered);
+    } else {
+      setFilteredBooks([]);
     }
-  }, [query]);
+  };
+
+  const handleBookSelect = (book) => {
+    navigation.navigate("PlayScreen", { book });
+    setSearchText("");
+    setFilteredBooks([]);
+  };
 
   return (
-    <LinearGradient colors={["#334155", "#131624"]} style={styles.gradient}>
-      <SafeAreaView style={styles.safeArea}>
-        <Text style={styles.title}>Search Results for "{query}"</Text>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search for books..."
+          placeholderTextColor="white"
+          value={searchText}
+          onChangeText={handleSearch}
+          autoFocus
+        />
+        <TouchableOpacity
+          style={styles.searchButton}
+          onPress={() => {
+            if (filteredBooks.length > 0) {
+              handleBookSelect(filteredBooks[0]);
+            }
+          }}
+        >
+          <Ionicons name="search" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
 
-        {filteredBooks.length > 0 ? (
-          <ScrollView contentContainerStyle={styles.resultsContainer}>
-            {filteredBooks.map((book, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.bookCard}
-                onPress={() => navigation.navigate('PlayScreen', { book })} // Navigate to PlayScreen
-              >
-                <View style={styles.bookShape}>
-                  <Image
-                    source={{ uri: book.image }}
-                    style={styles.bookImage}
-                    resizeMode="cover"
-                  />
-                  <Text style={styles.bookTitle}>{book.title}</Text>
-                  <Text style={styles.bookDescription}>
-                    {book.description}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        ) : (
-          <View style={styles.noResultsContainer}>
-            <Text style={styles.noResultsText}>
-              No books found for "{query}".
-            </Text>
-          </View>
+      <FlatList
+        data={filteredBooks}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.suggestionItem}
+            onPress={() => handleBookSelect(item)}
+          >
+            <Text style={styles.suggestionText}>{item.bookName}</Text>
+          </TouchableOpacity>
         )}
-      </SafeAreaView>
-    </LinearGradient>
+        style={styles.suggestionList}
+      />
+    </SafeAreaView>
   );
 };
 
-
-export default SearchResultsScreen;
-
 const styles = StyleSheet.create({
-  gradient: {
+  container: {
     flex: 1,
-  },
-  safeArea: {
-    flex: 1,
+    backgroundColor: "#1e293b",
     padding: 16,
   },
-  title: {
-    fontSize: 22,
-    color: "#ffffff",
-    fontWeight: "700",
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 20,
-    marginTop: 30,
   },
-  resultsContainer: {
-    paddingVertical: 20,
-    alignItems: "center", // Center the book cards
-  },
-  bookCard: {
-    marginBottom: 20,
-    alignItems: "center", // Center the book shape within the card
-  },
-  bookShape: {
-    width: 150, // Adjust width to give a "book" feel
-    height: 280, // Adjusted height to accommodate image and text
-    backgroundColor: "#1e293b",
-    borderRadius: 8,
-    padding: 10,
-    justifyContent: "center",
-    alignItems: "center", // Center items inside the bookShape
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5, // Adds depth to give it a "book" look
-  },
-  bookImage: {
-    width: 120, // Width of the image
-    height: 160, // Height of the image
-    borderRadius: 5, // Rounded corners for the image
-    marginBottom: 10, // Space between image and title
-  },
-  bookTitle: {
-    fontSize: 16,
-    color: "#ffffff",
-    fontWeight: "600",
-    textAlign: "center",
-  },
-  bookDescription: {
-    fontSize: 12,
-    color: "#b0b0b0",
-    marginTop: 5,
-    textAlign: "center",
-  },
-  noResultsContainer: {
+  searchInput: {
     flex: 1,
+    height: 40,
+    borderColor: "#ffffff",
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    color: "white",
+    marginRight: 10,
+  },
+  searchButton: {
+    padding: 10,
     justifyContent: "center",
     alignItems: "center",
   },
-  noResultsText: {
-    fontSize: 18,
+  suggestionList: {
+    marginTop: 10,
+  },
+  suggestionItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  suggestionText: {
     color: "#ffffff",
-    textAlign: "center",
   },
 });
+
+export default SearchScreen;

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Pressable, Alert, TextInput, ImageBackground } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import AntDesign from '@expo/vector-icons/AntDesign';
+import FontAwesome from '@expo/vector-icons/FontAwesome'; // Importing FontAwesome for phone icon
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../services/firebase'; // Adjust the path as needed
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -20,7 +21,7 @@ const LoginScreen = () => {
 
   // Google Sign-In setup
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com', // Replace with your actual client ID
+    clientId: '751183563712-69d65qiap4p5be3odbmoqip2tsu4okde.apps.googleusercontent.com', // Replace with your actual client ID
   });
 
   useEffect(() => {
@@ -106,14 +107,23 @@ const LoginScreen = () => {
           </Pressable>
         </Animatable.View>
 
-        {/* Google Sign In Button */}
+        {/* Google Sign In and Phone Sign In Buttons */}
         <Animatable.View animation="bounceIn" duration={1500}>
-          <Pressable style={styles.iconButton} onPress={() => promptAsync()}>
-            <View style={styles.circleIcon}>
-              <AntDesign name="googleplus" size={20} color="black" />
-            </View>
-          </Pressable>
+          <View style={styles.iconContainer}>
+            <Pressable style={styles.iconButton} onPress={() => promptAsync()}>
+              <View style={styles.circleIcon}>
+                <AntDesign name="googleplus" size={20} color="black" />
+              </View>
+            </Pressable>
+            
+            <Pressable style={styles.iconButton} onPress={() => Alert.alert("Phone Sign In clicked")}>
+              <View style={styles.circleIcon}>
+                <FontAwesome name="phone" size={20} color="black" />
+              </View>
+            </Pressable>
+          </View>
         </Animatable.View>
+
 
         {/* Already have an account? */}
         <View style={styles.footer}>
@@ -150,7 +160,7 @@ const styles = StyleSheet.create({
   signInButton: {
     backgroundColor: '#94a3b8',
     padding: 15,
-    marginTop:30,
+    marginTop: 30,
     marginLeft: 'auto',
     marginRight: 'auto',
     width: 300,
@@ -171,10 +181,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 30,
+    width: 300, // Set the width to match the button above
+    alignSelf: 'center', // Center the container
+  },
   iconButton: {
     padding: 10,
-    marginTop:30,
     alignItems: 'center',
+    flex: 1, // Allow buttons to grow equally
+    justifyContent: 'center',
   },
   circleIcon: {
     backgroundColor: '#e2e8f0',
@@ -202,6 +220,14 @@ const styles = StyleSheet.create({
   footerLink: {
     color: '#94a3b8',
     fontWeight: 'bold',
+  },
+    iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Adjust space between icons
+    marginTop: 30,
+    alignItems: 'center', // Center icons vertically
+    width: '60%', // Adjust width as needed
+    alignSelf: 'center', // Center the icon container in the view
   },
 });
 

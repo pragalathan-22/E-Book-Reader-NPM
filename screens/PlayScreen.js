@@ -6,8 +6,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import * as Speech from 'expo-speech';
 import { BookContext } from '../context/BookContext';
 
+// Dummy translation function, implement with a real translation API if needed.
 const translateText = async (text, targetLanguage) => {
-  // Dummy translation function, implement with a real translation API if needed.
   return targetLanguage !== 'English' ? `Translated (${targetLanguage}): ${text}` : text;
 };
 
@@ -27,66 +27,72 @@ const PlayScreen = ({ route }) => {
   // Convert chapters from object to array
   const chaptersArray = book.chapters ? Object.values(book.chapters) : [];
 
-  const handlePlayChapter = async (chapter, index) => {
-    if (playingChapter !== null && playingChapter !== index) {
-      Speech.stop();
-      setIsPlaying(false);
-      setPlayingChapter(null);
-      setCurrentWordIndex(0);
-    }
+const handlePlayChapter = async (chapter, index) => {
+  if (playingChapter !== null && playingChapter !== index) {
+    Speech.stop();
+    setIsPlaying(false);
+    setPlayingChapter(null);
+    setCurrentWordIndex(0);
+  }
 
-    if (playingChapter === index) {
-      Speech.stop();
-      setIsPlaying(false);
-      setPlayingChapter(null);
-      setCurrentWordIndex(0);
-      setExpandedChapter(null);
+  if (playingChapter === index) {
+    Speech.stop();
+    setIsPlaying(false);
+    setPlayingChapter(null);
+    setCurrentWordIndex(0);
+    setExpandedChapter(null);
+  } else {
+    if (selectedLanguage !== 'English' && translatedContentRef.current === '') {
+      translatedContentRef.current = await translateText(chapter.content, selectedLanguage);
     } else {
-      if (selectedLanguage !== 'English' && translatedContentRef.current === '') {
-        translatedContentRef.current = await translateText(chapter.content, selectedLanguage);
-      } else {
-        translatedContentRef.current = chapter.content;
-      }
-
-      addToRecentlyPlayed(book);
-
-      const words = translatedContentRef.current.split(' ');
-      const options = {
-        language: selectedLanguage === 'English' ? 'en' : 'ta',
-        pitch: selectedVoice === 'Male' ? 1 : 1.2,
-        rate: 0.7,
-        onStart: () => setCurrentWordIndex(0),
-        onDone: () => {
-          setIsPlaying(false);
-          setPlayingChapter(null);
-          setExpandedChapter(null);
-          setCurrentWordIndex(0);
-        },
-        onStopped: () => {
-          setIsPlaying(false);
-          setPlayingChapter(null);
-          setExpandedChapter(null);
-          setCurrentWordIndex(0);
-        },
-      };
-
-      Speech.speak(translatedContentRef.current, options);
-
-      setIsPlaying(true);
-      setPlayingChapter(index);
-      setExpandedChapter(index);
-
-      const wordHighlightInterval = setInterval(() => {
-        if (currentWordIndex < words.length) {
-          setCurrentWordIndex((prevIndex) => prevIndex + 1);
-        } else {
-          clearInterval(wordHighlightInterval);
-        }
-      }, 500);
-
-      return () => clearInterval(wordHighlightInterval);
+      translatedContentRef.current = chapter.content;
     }
-  };
+
+    addToRecentlyPlayed(book);
+
+    const words = translatedContentRef.current.split(' ');
+    
+    // Change voice based on selectedVoice state
+    const voice = selectedVoice === 'Male' ? 'com.apple.ttsbundle.Jack-compact' : 'com.apple.ttsbundle.Moira-compact';
+
+    const options = {
+      language: selectedLanguage === 'English' ? 'en' : 'ta',
+      voice: voice, // Use dynamic voice based on selection
+      pitch: selectedVoice === 'Male' ? 1 : 1.2,
+      rate: 0.7,
+      onStart: () => setCurrentWordIndex(0),
+      onDone: () => {
+        setIsPlaying(false);
+        setPlayingChapter(null);
+        setExpandedChapter(null);
+        setCurrentWordIndex(0);
+      },
+      onStopped: () => {
+        setIsPlaying(false);
+        setPlayingChapter(null);
+        setExpandedChapter(null);
+        setCurrentWordIndex(0);
+      },
+    };
+
+    Speech.speak(translatedContentRef.current, options);
+
+    setIsPlaying(true);
+    setPlayingChapter(index);
+    setExpandedChapter(index);
+
+    const wordHighlightInterval = setInterval(() => {
+      if (currentWordIndex < words.length) {
+        setCurrentWordIndex((prevIndex) => prevIndex + 1);
+      } else {
+        clearInterval(wordHighlightInterval);
+      }
+    }, 500);
+
+    return () => clearInterval(wordHighlightInterval);
+  }
+};
+
 
   const handleSaveBook = () => {
     if (!savedBooks.some((savedBook) => savedBook.id === book.id)) {
@@ -138,7 +144,7 @@ const PlayScreen = ({ route }) => {
               </TouchableOpacity>
 
               {expandedChapter === index && (
-                <View>
+                <View style={styles.chapterContentContainer}>
                   <Text style={styles.chapterContent}>
                     {translatedContentRef.current.split(' ').map((word, i) => (
                       <Text
@@ -163,7 +169,8 @@ const PlayScreen = ({ route }) => {
 
         {showOptions && (
           <View style={styles.optionsContainer}>
-            <Text style={styles.label}>Select Language:</Text>
+            {/* Language Picker - Uncomment if needed */}
+            {/* <Text style={styles.label}>Select Language:</Text>
             <Picker
               selectedValue={selectedLanguage}
               style={styles.picker}
@@ -172,7 +179,7 @@ const PlayScreen = ({ route }) => {
             >
               <Picker.Item label="English" value="English" />
               <Picker.Item label="Tamil" value="Tamil" />
-            </Picker>
+            </Picker> */}
 
             <Text style={styles.label}>Select Voice:</Text>
             <Picker
@@ -231,13 +238,14 @@ const styles = StyleSheet.create({
   bookHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   bookTitle: {
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
-    marginTop: 10,
+    flex: 1,
+    marginRight: 10,
   },
   saveIconContainer: {
     marginLeft: 10,
@@ -260,45 +268,47 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chapterTitle: {
-    fontSize: 22,
-    color: '#42f5ef',//
+    fontSize: 20,
+    color: '#498bd1',
   },
   circularPlayButton: {
-    borderRadius: 50,
-    backgroundColor: '#42f5ef',
-    padding: 5,
+    borderRadius: 30,
+    backgroundColor: '#4a86e8',
+    width: 30,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  chapterContentContainer: {
+    marginTop: 10,
+    paddingLeft: 10,
   },
   chapterContent: {
     color: 'white',
-    fontSize: 20,
-    marginTop:15,
+    fontSize: 16,
   },
   iconContainer: {
     position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: 'rgba(52, 52, 52, 0.5)',
-    borderRadius: 30,
-    padding: 10,
+    bottom: 10,
+    right: 10,
   },
   optionsContainer: {
     position: 'absolute',
-    bottom: 80,
-    right: 20,
-    backgroundColor: 'rgba(52, 52, 52, 0.9)',
+    bottom: 70,
+    right: 10,
+    backgroundColor: '#2c3e50',
     borderRadius: 10,
     padding: 10,
-    width: 200,
-    zIndex: 100,
+    elevation: 5,
   },
   label: {
     color: 'white',
     marginBottom: 5,
   },
   picker: {
-    height: 50,
-    width: '100%',
+    height: 40,
+    width: 150,
+    backgroundColor: '#34495e',
     color: 'white',
-    backgroundColor: '#1f2937',
   },
 });

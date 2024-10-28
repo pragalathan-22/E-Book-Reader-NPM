@@ -331,20 +331,22 @@ const styles = StyleSheet.create({
   },
   suggestionItem: {
     padding: 10,
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: "#ccc",
+    marginRight:60,
   },
   suggestionText: {
     color: "#ffffff",
   },
   suggestionList: {
     position: "absolute",
-    top: 60,
+    top: 100,
     width: "100%",
     backgroundColor: "#1e293b",
     borderRadius: 8,
     elevation: 5,
     maxHeight: 150,
     zIndex: 1,
+    
   },
 });

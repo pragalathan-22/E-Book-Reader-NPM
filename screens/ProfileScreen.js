@@ -133,9 +133,9 @@ const ProfileScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('HelpSupport')}>
               <Text style={styles.optionText}>Help & Support</Text>
-            </TouchableOpacity>
+            {/* </TouchableOpacity>
             <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('')}>
-              <Text style={styles.optionText}>History</Text>
+              <Text style={styles.optionText}>History</Text> */}
             </TouchableOpacity>
             <TouchableOpacity style={styles.optionItem} onPress={handleLogout}>
               <Text style={styles.optionText}>Logout</Text>
@@ -206,6 +206,7 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop:20,
   },
   gradient: {
     flex: 1,
