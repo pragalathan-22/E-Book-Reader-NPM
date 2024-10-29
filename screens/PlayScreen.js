@@ -1,11 +1,11 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, Alert, Modal } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Speech from 'expo-speech';
 import { BookContext } from '../context/BookContext';
 
-// Dummy translation function, implement with a real translation API if needed.
+// Dummy translation function
 const translateText = async (text, targetLanguage) => {
   return targetLanguage !== 'English' ? `Translated (${targetLanguage}): ${text}` : text;
 };
@@ -22,11 +22,18 @@ const PlayScreen = ({ route }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const translatedContentRef = useRef('');
   const wordHighlightIntervalRef = useRef(null);
-  const speechRef = useRef(null); // Reference for Speech
-  const currentSpeechIndexRef = useRef(0); // Reference for the current word index during speech
+  const currentSpeechIndexRef = useRef(0); // Reference for current speech index
 
   // Convert chapters from object to array
   const chaptersArray = book.chapters ? Object.values(book.chapters) : [];
+
+  useEffect(() => {
+    return () => {
+      // Cleanup function to stop speech when unmounted
+      Speech.stop();
+      clearInterval(wordHighlightIntervalRef.current);
+    };
+  }, []);
 
   const handlePlayChapter = async (chapter, index) => {
     if (playingChapter !== null && playingChapter !== index) {
@@ -38,7 +45,6 @@ const PlayScreen = ({ route }) => {
     }
 
     if (playingChapter === index) {
-      // If already playing this chapter, stop it
       Speech.stop();
       clearInterval(wordHighlightIntervalRef.current);
       setIsPlaying(false);
@@ -53,7 +59,6 @@ const PlayScreen = ({ route }) => {
       addToRecentlyPlayed(book);
       const words = translatedContentRef.current.split(' ');
 
-      // Change voice based on selectedVoice state
       const voice = selectedVoice === 'Male' ? 'com.apple.ttsbundle.Jack-compact' : 'com.apple.ttsbundle.Moira-compact';
 
       const options = {
@@ -84,10 +89,9 @@ const PlayScreen = ({ route }) => {
         const currentText = words.slice(currentWordIndex).join(' ');
         Speech.speak(currentText, options);
       } else {
-        // Start speech from the beginning of the chapter
         Speech.speak(translatedContentRef.current, options);
       }
-      
+
       setIsPlaying(true);
       setPlayingChapter(index);
       setExpandedChapter(index); // Keep expanded chapter visible
@@ -96,15 +100,13 @@ const PlayScreen = ({ route }) => {
 
   const startWordHighlighting = (words) => {
     wordHighlightIntervalRef.current = setInterval(() => {
-      if (currentWordIndex < words.length) {
-        setCurrentWordIndex((prevIndex) => {
-          currentSpeechIndexRef.current = prevIndex + 1; // Update the reference for the current speech index
-          return prevIndex + 1;
-        });
+      if (currentSpeechIndexRef.current < words.length) {
+        setCurrentWordIndex(currentSpeechIndexRef.current);
+        currentSpeechIndexRef.current += 1; // Update the reference for the current speech index
       } else {
         clearInterval(wordHighlightIntervalRef.current);
       }
-    }, 500);
+    }, 500); // Adjust timing as necessary to match the speech speed
   };
 
   const handleSaveBook = () => {
@@ -122,6 +124,23 @@ const PlayScreen = ({ route }) => {
   };
 
   const isBookSaved = savedBooks.some((savedBook) => savedBook.id === book.id);
+
+  const handleWordPress = (word, index) => {
+    const words = translatedContentRef.current.split(' ');
+    const textToSpeak = words.slice(index).join(' '); // Get words from the clicked index to the end
+    const options = {
+      language: selectedLanguage === 'English' ? 'en' : 'ta',
+      voice: selectedVoice === 'Male' ? 'com.apple.ttsbundle.Jack-compact' : 'com.apple.ttsbundle.Moira-compact',
+      pitch: selectedVoice === 'Female' ? 1 : 1.2,
+      rate: 0.8,
+    };
+
+    Speech.stop(); // Stop any ongoing speech
+    Speech.speak(textToSpeak, options); // Speak from the clicked word to the end
+    setCurrentWordIndex(index); // Set the current word index
+    currentSpeechIndexRef.current = index; // Update the reference for the current speech index
+    startWordHighlighting(words); // Start highlighting from the clicked word
+  };
 
   return (
     <View style={styles.container}>
@@ -162,14 +181,15 @@ const PlayScreen = ({ route }) => {
                 <ScrollView style={styles.chapterContentContainer}>
                   <Text style={styles.chapterContent}>
                     {translatedContentRef.current.split(' ').map((word, i) => (
-                      <Text
-                        key={i}
-                        style={{
-                          color: currentWordIndex === i ? 'yellow' : 'white',
-                        }}
-                      >
-                        {word}{' '}
-                      </Text>
+                      <TouchableOpacity key={i} onPress={() => handleWordPress(word, i)}>
+                        <Text
+                          style={{
+                            color: currentWordIndex === i ? 'yellow' : 'white',
+                          }}
+                        >
+                          {word}{' '}
+                        </Text>
+                      </TouchableOpacity>
                     ))}
                   </Text>
                 </ScrollView>
@@ -282,7 +302,7 @@ const styles = StyleSheet.create({
     overflow: 'scroll', // Enable scrolling if content exceeds max height
   },
   chapterContent: {
-    fontSize: 16,
+    fontSize: 20,
     color: 'white',
     lineHeight: 22, // Adjust line height for better readability
     marginBottom:10,

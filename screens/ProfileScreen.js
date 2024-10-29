@@ -206,7 +206,6 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop:20,
   },
   gradient: {
     flex: 1,
@@ -217,7 +216,7 @@ const styles = StyleSheet.create({
   profileSection: {
     alignItems: 'center',
     marginBottom: 30,
-    marginTop: 20, // Add margin to lower the profile section
+    marginTop: 40, // Add margin to lower the profile section
   },
   profileImage: {
     width: 100,
