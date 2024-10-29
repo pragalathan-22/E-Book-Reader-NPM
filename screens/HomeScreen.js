@@ -222,7 +222,13 @@ const ClipCard = ({ title, image, book, navigation }) => {
     <TouchableOpacity style={styles.card} onPress={handlePress}>
       <Image source={{ uri: image }} style={styles.cardImage} />
       <View style={styles.cardCover}>
-        <Text style={styles.cardTitle}>{title}</Text>
+        <Text
+          style={styles.cardTitle}
+          numberOfLines={2} // Limit to 2 lines
+          ellipsizeMode="tail" // Show ellipses at the end if text overflows
+        >
+          {title}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -304,7 +310,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginRight: 10,
     width: 120,
-    height: 250,
+    height: 240,
     elevation: 5,
   },
   cardImage: {
@@ -330,10 +336,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   suggestionItem: {
-    padding: 10,
+    padding: 14,
     borderBottomWidth: 2,
     borderBottomColor: "#ccc",
-    marginRight:60,
+    marginRight:30,
+    marginLeft:20,
   },
   suggestionText: {
     color: "#ffffff",
@@ -347,6 +354,6 @@ const styles = StyleSheet.create({
     elevation: 5,
     maxHeight: 150,
     zIndex: 1,
-    
+    marginLeft:15,
   },
 });
