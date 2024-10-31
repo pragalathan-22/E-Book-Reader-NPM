@@ -302,10 +302,10 @@ const styles = StyleSheet.create({
     overflow: 'scroll', // Enable scrolling if content exceeds max height
   },
   chapterContent: {
-    fontSize: 20,
+    fontSize: 24, // Increased font size
     color: 'white',
-    lineHeight: 22, // Adjust line height for better readability
-    marginBottom:10,
+    lineHeight: 28, // Adjust line height proportionally
+    marginBottom: 10,
   },
   modalOverlay: {
     flex: 1,

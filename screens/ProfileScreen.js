@@ -10,7 +10,7 @@ import { BookContext } from '../context/BookContext'; // Ensure this is the corr
 const ProfileScreen = () => {
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150');
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState('Prag');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('abc.com');
   const [modalVisible, setModalVisible] = useState(false);
   const [fullImageModalVisible, setFullImageModalVisible] = useState(false);

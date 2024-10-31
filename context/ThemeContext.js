@@ -7,13 +7,13 @@ const lightTheme = {
   colors: {
     background: '#FFFFFF',
     buttonBackground: '#E0E0E0',
-    text: '#000000',
+    text: 'black',
   },
 };
 
 const darkTheme = {
   colors: {
-    background: '#334155', // Dark background (top color)
+    background:'#334155', // Dark background (top color)
     buttonBackground: '#131624', // Dark button background (bottom color)
     text: '#FFFFFF', // Text color for dark mode
   },

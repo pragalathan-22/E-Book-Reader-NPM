@@ -21,7 +21,7 @@ const LoginScreen = () => {
 
   // Google Sign-In setup
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: '751183563712-69d65qiap4p5be3odbmoqip2tsu4okde.apps.googleusercontent.com', // Replace with your actual client ID
+    clientId: 'AIzaSyAr_EtvpTL8zbgwv1Rc1plNJscRTqtzB5Q', // Replace with your actual client ID
   });
 
   useEffect(() => {
@@ -124,7 +124,6 @@ const LoginScreen = () => {
           </View>
         </Animatable.View>
 
-
         {/* Already have an account? */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Don't have an account? </Text>
@@ -220,14 +219,6 @@ const styles = StyleSheet.create({
   footerLink: {
     color: '#94a3b8',
     fontWeight: 'bold',
-  },
-    iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between', // Adjust space between icons
-    marginTop: 30,
-    alignItems: 'center', // Center icons vertically
-    width: '60%', // Adjust width as needed
-    alignSelf: 'center', // Center the icon container in the view
   },
 });
 

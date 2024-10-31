@@ -1,21 +1,31 @@
-// import { getAuth } from "firebase/auth"; // Import Firebase Auth
+import { useEffect, useState } from 'react';
+import messaging from '@react-native-firebase/messaging';
 
-// const auth = getAuth();
+const useNotificationPermission = () => {
+    const [loading, setLoading] = useState(true);
+    const [granted, setGranted] = useState(false);
 
-// export const sendNotificationEmail = async (recipientEmail, bookName) => {
-//   const response = await fetch('https://api.your-email-service.com/send', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify({
-//       to: recipientEmail,
-//       subject: 'New Book Uploaded',
-//       text: `A new book has been uploaded: ${bookName}.`,
-//     }),
-//   });
+    useEffect(() => {
+        const requestUserPermission = async () => {
+            try {
+                const authStatus = await messaging().requestPermission();
+                const enabled =
+                    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+                    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-//   if (!response.ok) {
-//     throw new Error('Failed to send email notification.');
-//   }
-// };
+                setGranted(enabled);
+                console.log('Authorization status:', authStatus);
+            } catch (error) {
+                console.error('Error requesting notification permission:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        requestUserPermission();
+    }, []);
+
+    return { loading, granted };
+};
+
+export default useNotificationPermission;
