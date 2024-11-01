@@ -4,6 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Speech from 'expo-speech';
 import { BookContext } from '../context/BookContext';
+import { doc, updateDoc } from "firebase/firestore"; // Import Firebase Firestore functions
+import { db } from '../services/firebase'; // Import your Firebase configuration
 
 // Dummy translation function
 const translateText = async (text, targetLanguage) => {
@@ -28,12 +30,23 @@ const PlayScreen = ({ route }) => {
   const chaptersArray = book.chapters ? Object.values(book.chapters) : [];
 
   useEffect(() => {
+    handleBookPlay(); // Call this when the screen loads to play the book.
+
     return () => {
       // Cleanup function to stop speech when unmounted
       Speech.stop();
       clearInterval(wordHighlightIntervalRef.current);
     };
   }, []);
+
+  const handleBookPlay = async () => {
+    // Increment the suggestion count
+    const bookRef = doc(db, "books", book.id);
+    await updateDoc(bookRef, {
+      suggestionCount: (book.suggestionCount || 0) + 1,
+    });
+    // Additional logic to play the book can go here
+  };
 
   const handlePlayChapter = async (chapter, index) => {
     if (playingChapter !== null && playingChapter !== index) {

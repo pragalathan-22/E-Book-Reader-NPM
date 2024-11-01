@@ -130,7 +130,7 @@ const HomeScreen = () => {
                 style={{ paddingHorizontal: 16 }}
                 decelerationRate="fast"
               >
-                {uniqueAuthors.map((book) => (
+                {uniqueAuthors.slice(0, 4).map((book) => (
                   <AuthorProfile 
                     key={book.id}
                     name={book.authorName}
@@ -186,7 +186,7 @@ const HomeScreen = () => {
                 ))}
                 <TouchableOpacity
                   style={styles.seeMoreButton}
-                  onPress={() => navigation.navigate("SeeMore")}
+                  onPress={() => navigation.navigate('Suggestions')} 
                 >
                   <Text style={styles.seeMoreText}>See More</Text>
                 </TouchableOpacity>

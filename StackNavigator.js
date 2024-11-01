@@ -21,6 +21,7 @@ import AppPreferencesScreen from "./screens/AppPreferencesScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import LilbraryScreen from "./screens/LilbraryScreen";
 import AccountSettingsScreen from "./screens/AccountSettingsScreen";
+import SuggestionsPage from './screens/SuggestionsPage';
 
 const Tab = createBottomTabNavigator();
 
@@ -131,6 +132,7 @@ function Navigation() {
             <Stack.Screen name="AppPreferencesScreen" component={AppPreferencesScreen} options={{ headerShown: false }} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
             <Stack.Screen name="AccountSettingsScreen" component={AccountSettingsScreen} options={{headerShown:false}}/>
+            <Stack.Screen name="Suggestions" component={SuggestionsPage} options={{headerShown:false}} />
         </Stack.Navigator>
     );
 }
