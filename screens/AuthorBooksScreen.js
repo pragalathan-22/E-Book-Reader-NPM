@@ -37,7 +37,7 @@ const AuthorBooksScreen = () => {
   };
 
   return (
-    <LinearGradient colors={["#334155", "#131624"]} style={styles.gradient}>
+    <LinearGradient colors={["#212f3d", "#212f3d"]} style={styles.gradient}>
       <View style={styles.container}>
         <Text style={styles.title}>Books by {authorName}</Text>
         <ScrollView contentContainerStyle={styles.booksContainer}>
@@ -51,9 +51,9 @@ const AuthorBooksScreen = () => {
             </TouchableOpacity>
           ))}
         </ScrollView>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        {/* <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Text style={styles.backButtonText}>Go Back</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </LinearGradient>
   );
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "center",
     marginVertical: 20,
+    marginTop:28,
   },
   booksContainer: {
     paddingBottom: 20,

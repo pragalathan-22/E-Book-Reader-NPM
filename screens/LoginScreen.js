@@ -108,7 +108,7 @@ const LoginScreen = () => {
         </Animatable.View>
 
         {/* Google Sign In and Phone Sign In Buttons */}
-        <Animatable.View animation="bounceIn" duration={1500}>
+        {/* <Animatable.View animation="bounceIn" duration={1500}>
           <View style={styles.iconContainer}>
             <Pressable style={styles.iconButton} onPress={() => promptAsync()}>
               <View style={styles.circleIcon}>
@@ -122,7 +122,7 @@ const LoginScreen = () => {
               </View>
             </Pressable>
           </View>
-        </Animatable.View>
+        </Animatable.View> */}
 
         {/* Already have an account? */}
         <View style={styles.footer}>
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20,
+    marginTop: 60,
   },
   footerText: {
     color: '#ccc',

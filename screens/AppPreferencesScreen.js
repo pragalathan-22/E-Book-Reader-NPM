@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const AppPreferencesScreen = () => {
   return (
-    <LinearGradient colors={['#334155', '#131624']} style={{ flex: 1 }}>
+    <LinearGradient colors={["#212f3d", "#212f3d"]} style={{ flex: 1 }}>
       <SafeAreaView style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.header}>Welcome to Your E-Book Companion</Text>

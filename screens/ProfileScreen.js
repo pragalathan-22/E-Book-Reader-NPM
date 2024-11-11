@@ -66,7 +66,7 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient colors={["#334155", "#131624"]} style={styles.gradient}>
+      <LinearGradient colors={["#212f3d", "#212f3d"]} style={styles.gradient}>
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
           {/* Profile Information */}
           <View style={styles.profileSection}>
@@ -125,11 +125,11 @@ const ProfileScreen = () => {
           {/* Additional Options */}
           <View style={styles.optionsSection}>
             <Text style={styles.sectionTitle}>Settings</Text>
-            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('AccountSettingsScreen')}>
+            {/* <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('AccountSettingsScreen')}>
               <Text style={styles.optionText}>Account Settings</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('AppPreferencesScreen')}>
-              <Text style={styles.optionText}>App Preferences</Text>
+              <Text style={styles.optionText}>About us</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('HelpSupport')}>
               <Text style={styles.optionText}>Help & Support</Text>

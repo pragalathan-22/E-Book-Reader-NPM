@@ -157,7 +157,7 @@ const PlayScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={['#334155', '#131624']} style={styles.gradient}>
+      <LinearGradient colors={["#abb2b9", "#abb2b9"]} style={styles.gradient}>
         <View style={styles.bookContainer}>
           <Image source={{ uri: book.bookImage }} style={styles.bookCover} />
         </View>
@@ -167,6 +167,9 @@ const PlayScreen = ({ route }) => {
             <TouchableOpacity onPress={() => setIsModalVisible(true)}>
               <Text style={styles.bookTitle} numberOfLines={1} ellipsizeMode="tail">
                 {book.bookName}
+              </Text>
+              <Text style={styles.bookAuthor} numberOfLines={1} ellipsizeMode="tail">
+                Author:  {book.authorName}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={isBookSaved ? handleUnsaveBook : handleSaveBook} style={styles.saveIconContainer}>
@@ -197,7 +200,8 @@ const PlayScreen = ({ route }) => {
                       <TouchableOpacity key={i} onPress={() => handleWordPress(word, i)}>
                         <Text
                           style={{
-                            color: currentWordIndex === i ? 'yellow' : 'white',
+                            color: currentWordIndex === i ? 'white' : 'white',
+                            lineHeight: 24, // Try increasing line height (e.g., 36 or more)
                           }}
                         >
                           {word}{' '}
@@ -259,7 +263,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 10,
-    elevation: 5,
+    elevation: 10,
   },
   bookCover: {
     width: '100%',
@@ -270,6 +274,9 @@ const styles = StyleSheet.create({
   textContainer: {
     padding: 20,
     width: '100%',
+    backgroundColor:"#212f3d",
+    height:500,
+    borderRadius:30,
   },
   bookHeader: {
     flexDirection: 'row',
@@ -281,13 +288,19 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     flex: 1,
+    lineHeight: 24, // Try increasing line height (e.g., 36 or more)
+  },
+  bookAuthor:{
+    marginBottom:-20,
+    fontSize:18,
+    color:"#abb2b9",
   },
   saveIconContainer: {
     marginLeft: 3,
   },
   chapterContainer: {
-    marginVertical: 10,
-    marginTop: 5,
+    marginVertical: 5,
+    marginTop: 25,
   },
   chapterHeader: {
     flexDirection: 'row',
@@ -296,13 +309,14 @@ const styles = StyleSheet.create({
   },
   chapterTitle: {
     fontSize: 18,
-    color: '#7b67b5',
+    color: '#5d6d7e',
     fontWeight: 'bold',
+    lineHeight: 30, // Try increasing line height (e.g., 36 or more)
   },
   circularPlayButton: {
     width: 30,
     height: 30,
-    backgroundColor: '#7b67b5',
+    backgroundColor: '#5d6d7e',
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
@@ -317,8 +331,6 @@ const styles = StyleSheet.create({
   chapterContent: {
     fontSize: 24, // Increased font size
     color: 'white',
-    lineHeight: 28, // Adjust line height proportionally
-    marginBottom: 10,
   },
   modalOverlay: {
     flex: 1,
@@ -346,7 +358,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     alignSelf: 'flex-end',
-    backgroundColor: '#7b67b5',
+    backgroundColor: '#abb2b9',
     padding: 10,
     borderRadius: 5,
   },

@@ -38,15 +38,9 @@ const SeeMoreScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient colors={['#334155', '#131624']} style={styles.gradient}>
-        {/* Back Button */}
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>Go Back</Text>
-        </TouchableOpacity>
-
-        {/* Scrollable Books List */}
+      <LinearGradient colors={["#212f3d", "#212f3d"]} style={styles.gradient}>
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-          <Text style={styles.sectionTitle}>More Books</Text>
+          <Text style={styles.sectionTitle}>              More Books</Text>
           <View style={styles.booksContainer}>
             {books.map((book) => (
               <TouchableOpacity
@@ -55,8 +49,10 @@ const SeeMoreScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate('PlayScreen', { book })} // Pass the entire book object
               >
                 <Image source={{ uri: book.bookImage }} style={styles.bookCover} resizeMode="cover" />
-                <Text style={styles.bookTitle}>{book.bookName}</Text>
-                {/* <Text style={styles.bookAuthor}>{book.description}</Text> */}
+                <View style={styles.bookInfo}>
+                  <Text style={styles.bookTitle}>{book.bookName}</Text>
+                  {/* <Text style={styles.bookAuthor}>{book.description}</Text> */}
+                </View>
               </TouchableOpacity>
             ))}
           </View>
@@ -75,18 +71,6 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
   },
-  backButton: {
-    backgroundColor: '#2b394b',
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: 'flex-start',
-    margin: 20,
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   scrollContainer: {
     padding: 20,
     paddingBottom: 100, // Ensure content is visible above bottom nav
@@ -96,14 +80,14 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 20,
+    marginTop:10,
   },
   booksContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    flexDirection: 'column', // Arrange items in a column
+    justifyContent: 'flex-start',
   },
   bookItem: {
-    width: '48%', // Two book boxes per row
+    flexDirection: 'row', // Align image and text in a row
     backgroundColor: '#2b394b',
     borderRadius: 8,
     marginBottom: 20,
@@ -116,15 +100,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   bookCover: {
-    width: '100%',
-    height: 200,
+    width: 60, // Fixed width for the book cover
+    height: 90, // Fixed height for the book cover
     borderRadius: 5,
+    marginRight: 10, // Space between image and text
+  },
+  bookInfo: {
+    flex: 1, // Allow text to take the remaining space
   },
   bookTitle: {
     color: 'white',
-    marginTop: 10,
     fontSize: 16,
     fontWeight: 'bold',
+    lineHeight: 36, // Try increasing line height (e.g., 36 or more)
+    marginBottom: 10,
   },
   bookAuthor: {
     color: 'gray',

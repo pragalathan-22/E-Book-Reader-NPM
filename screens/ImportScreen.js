@@ -113,7 +113,7 @@ const ImportScreen = () => {
   };
 
   return (
-    <LinearGradient colors={['#334155', '#131624']} style={{ flex: 1 }}>
+    <LinearGradient colors={["#212f3d", "#212f3d"]} style={{ flex: 1 }}>
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={styles.container}>
           <Text style={styles.header}>Import Your Text Files</Text>

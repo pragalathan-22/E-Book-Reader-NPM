@@ -46,9 +46,9 @@ const AuthorPage = () => {
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+      {/* <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
         <Text style={styles.backButtonText}>Go Back</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
@@ -56,7 +56,7 @@ const AuthorPage = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#334155",
+    backgroundColor: "#212f3d",
     padding: 16,
   },
   title: {

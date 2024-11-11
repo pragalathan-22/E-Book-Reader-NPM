@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end', // Align content at the bottom
     alignItems: 'center',
-    backgroundColor: '#131624',
+    backgroundColor: "#212f3d",
     padding: 20,
   },
   header: {
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#34d399',
+    backgroundColor: '#5d6d7e',
     justifyContent: 'center',
     alignItems: 'center',
   },

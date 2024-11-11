@@ -13,7 +13,7 @@ const LibraryScreen = () => {
     };
 
     return (
-        <LinearGradient colors={['#334155', '#131624']} style={styles.gradient}>
+        <LinearGradient colors={["#212f3d", "#212f3d"]} style={styles.gradient}>
             <SafeAreaView style={styles.container}>
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     <Text style={styles.header}>Your E-Book Library</Text>
@@ -73,21 +73,21 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between', // Adjusts spacing between books
     },
     bookItem: {
-        width: '48%', // Set each book item to take up nearly half the width
+        width: '30%', // Adjusted to allow three items per row
         marginBottom: 15,
         backgroundColor: '#2d3748', // Dark background for book item
         borderRadius: 5,
-        padding: 10,
+        padding: 5, // Reduced padding for smaller size
         elevation: 2, // Add shadow effect
     },
     bookCover: {
         width: '100%', // Full width of the item
-        height: 200,
+        height: 150, // Reduced height for smaller size
         borderRadius: 5,
     },
     placeholderImage: {
         width: '100%',
-        height: 200,
+        height: 150, // Match the height of bookCover
         borderRadius: 5,
         backgroundColor: '#gray', // Placeholder background
     },
@@ -97,11 +97,11 @@ const styles = StyleSheet.create({
     bookTitle: {
         color: 'white',
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: 14, // Reduced font size
     },
     bookAuthor: {
         color: '#94a3b8',
-        fontSize: 14,
+        fontSize: 12, // Reduced font size
     },
     noBooksText: {
         color: 'white',

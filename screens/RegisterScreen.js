@@ -10,11 +10,10 @@ import {
   ImageBackground,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth, db } from '../services/firebase';
 import { setDoc, doc } from 'firebase/firestore';
 
-// Background image URL (replace this with your book-related image URL)
 const backgroundImage = require('../assets/2.jpg'); // Ensure you have this image in the mentioned path
 
 const RegisterScreen = () => {
@@ -40,17 +39,18 @@ const RegisterScreen = () => {
       const user = userCredential.user;
       console.log('Registered with:', user.email);
 
+      // Send a verification email
+      await sendEmailVerification(user);
+      Alert.alert('Verification Email Sent', 'Please check your email to verify your account.');
+
       // Store user information in Firestore
       await setDoc(doc(db, 'users', user.uid), {
         email: user.email,
         createdAt: new Date(),
+        isVerified: false, // You may use this to track verification status in Firestore
       });
 
-      // Send a verification email
-      await user.sendEmailVerification();
-      Alert.alert('Verification Email Sent', 'Please check your email to verify your account.');
-
-      // Navigate to login or verification screen
+      // Navigate to login or verification screen after registration
       navigation.navigate('Login');
     } catch (error) {
       console.error('Error during registration:', error);
@@ -109,22 +109,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    // backgroundColor: 'rgba(240, 244, 248, 0.8)', 
   },
   title: {
     fontSize: 24,
     marginBottom: 20,
-    color:"white"
+    color: "white",
   },
   input: {
     width: '100%',
     padding: 12,
     marginVertical: 8,
     backgroundColor: '#fff',
-    borderRadius: 8,
+    borderRadius: 25,
+    marginTop: 10,
   },
   registerButton: {
-    backgroundColor: '#94a3b8',
+    backgroundColor: '#7CB9E8',
     padding: 15,
     borderRadius: 25,
     alignItems: 'center',

@@ -26,7 +26,7 @@ const SuggestionScreen = ({ navigation }) => {
     fetchSuggestedBooks();
   }, []);
 
-  // Render each book item with a clickable TouchableOpacity
+  // Render each book item with image on the left and title on the right
   const renderBookItem = ({ item }) => (
     <TouchableOpacity
       style={styles.bookItem}
@@ -47,17 +47,18 @@ const SuggestionScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <LinearGradient colors={['#334155', '#131624']} style={styles.gradient}>
+      <LinearGradient colors={["#212f3d", "#212f3d"]} style={styles.gradient}>
         {/* Back Button */}
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        {/* <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Text style={styles.backButtonText}>Go Back</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <FlatList
+          key={'single-column'} // Unique key for single-column layout
           data={suggestedBooks}
           keyExtractor={(item) => item.id}
           renderItem={renderBookItem}
-          numColumns={2} // Display two items per row
+          numColumns={1} // Display one item per row
           contentContainerStyle={styles.contentContainer}
           showsVerticalScrollIndicator={false}
         />
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 20,
     paddingBottom: 100,
+    marginTop:20,
   },
   loadingContainer: {
     flex: 1,
@@ -96,30 +98,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#131624',
   },
   bookItem: {
-    width: '48%', // Reduced width slightly to allow for margin
+    flexDirection: 'row', // Arrange items in a row
+    alignItems: 'center',
     backgroundColor: '#2b394b',
     borderRadius: 8,
     marginBottom: 20,
-    marginHorizontal: '1%', // Add horizontal margin for spacing between items
     padding: 10,
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    alignItems: 'center',
   },
   bookCover: {
-    width: '100%',
-    height: 200,
+    width: 60, // Fixed width for the book cover
+    height: 90, // Fixed height for the book cover
     borderRadius: 5,
+    marginRight: 10, // Space between image and text
   },
   bookTitle: {
     color: 'white',
-    marginTop: 10,
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    textAlign: 'center',
+    flexShrink: 1, // Allow title to wrap if needed
   },
 });
 

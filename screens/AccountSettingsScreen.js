@@ -107,14 +107,14 @@ const AccountSettingsScreen = () => {
   };
 
   return (
-    <LinearGradient colors={["#334155", "#131624"]} style={styles.gradient}>
+    <LinearGradient colors={["#212f3d", "#212f3d"]} style={styles.gradient}>
       <View style={styles.container}>
         <Text style={styles.title}>Account Settings</Text>
 
         {/* Toggle Notifications */}
-        <TouchableOpacity style={styles.option} onPress={toggleNotifications}>
+        {/* <TouchableOpacity style={styles.option} onPress={toggleNotifications}>
           <Text style={styles.optionText}>Notifications: {notificationsEnabled ? "On" : "Off"}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* Email Verification */}
         <TouchableOpacity style={styles.option} onPress={confirmEmail}>
@@ -122,12 +122,12 @@ const AccountSettingsScreen = () => {
         </TouchableOpacity>
 
         {/* Phone Verification */}
-        <TouchableOpacity style={styles.option} onPress={verifyPhone}>
+        {/* <TouchableOpacity style={styles.option} onPress={verifyPhone}>
           <Text style={styles.optionText}>Phone: {phoneConfirmed ? "(Verified)" : phone}</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* Phone Number Input */}
-        {showPhoneInput && (
+        {/* {showPhoneInput && (
           <View style={styles.verificationContainer}>
             <TextInput
               style={styles.input}
@@ -148,10 +148,10 @@ const AccountSettingsScreen = () => {
               )}
             </TouchableOpacity>
           </View>
-        )}
+        )} */}
 
         {/* Verification Input */}
-        {showVerificationInput && (
+        {/* {showVerificationInput && (
           <View style={styles.verificationContainer}>
             <TextInput
               style={styles.input}
@@ -164,7 +164,7 @@ const AccountSettingsScreen = () => {
               <Text style={styles.verifyButtonText}>Verify</Text>
             </TouchableOpacity>
           </View>
-        )}
+        )} */}
 
         <TouchableOpacity style={styles.option}>
           <Text style={styles.optionText}>Delete Account</Text>

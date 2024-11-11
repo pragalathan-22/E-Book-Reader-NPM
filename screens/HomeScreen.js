@@ -72,7 +72,7 @@ const HomeScreen = () => {
   const uniqueAuthors = getUniqueAuthors(booksData);
 
   return (
-    <LinearGradient colors={["#334155", "#131624"]} style={styles.gradient}>
+    <LinearGradient colors={["#212f3d", "#212f3d"]} style={styles.gradient}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <KeyboardAvoidingView
           style={styles.container}
@@ -146,7 +146,7 @@ const HomeScreen = () => {
                 </TouchableOpacity>
               </ScrollView>
 
-              <Text style={styles.sectionTitle}>Trending Clips</Text>
+              <Text style={styles.sectionTitle}>All Books</Text>
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
@@ -220,16 +220,21 @@ const ClipCard = ({ title, image, book, navigation }) => {
 
   return (
     <TouchableOpacity style={styles.card} onPress={handlePress}>
-      <Image source={{ uri: image }} style={styles.cardImage} />
-      <View style={styles.cardCover}>
-        <Text
-          style={styles.cardTitle}
-          numberOfLines={2} // Limit to 2 lines
-          ellipsizeMode="tail" // Show ellipses at the end if text overflows
-        >
-          {title}
-        </Text>
-      </View>
+      <LinearGradient
+        colors={["transparent","transparent", "#abb2b9"]} // Gradient colors for the ClipCard
+        style={styles.cardGradient}
+      >
+        <Image source={{ uri: image }} style={styles.cardImage} />
+        <View style={styles.cardCover}>
+          <Text
+            style={styles.cardTitle}
+            numberOfLines={2} // Limit to 2 lines
+            ellipsizeMode="tail" // Show ellipses at the end if text overflows
+          >
+            {title}
+          </Text>
+        </View>
+      </LinearGradient>
     </TouchableOpacity>
   );
 };
@@ -285,7 +290,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 16,
   },
   authorProfile: {
     alignItems: "center",
@@ -304,19 +308,49 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
   },
-  card: {
-    backgroundColor: "#1e293b",
-    borderRadius: 8,
+  seeMoreButton: {
+    justifyContent: "center",
+    alignItems: "center",
     padding: 10,
+  },
+  seeMoreText: {
+    color: "#ffffff",
+    fontWeight: "500",
+  },
+  suggestionItem: {
+    padding: 10,
+    backgroundColor: "#1e293b",
+    borderRadius: 5,
+    marginVertical: 5,
+  },
+  suggestionText: {
+    color: "#ffffff",
+  },
+  suggestionList: {
+    maxHeight: 200, // Increase this value to your desired height
+    borderRadius: 5,
+    marginVertical: 10,
+    backgroundColor: "#1e293b",
+  },
+
+  card: {
+    borderRadius: 8,
     marginRight: 10,
     width: 120,
     height: 240,
-    elevation: 5,
+
+  },
+  cardGradient: {
+    flex: 1,
+    borderRadius: 8,
+    padding: 10,
   },
   cardImage: {
     width: "100%",
     height: "70%",
     borderRadius: 8,
+    marginTop: 5,
+    elevation: 5,
   },
   cardCover: {
     padding: 5,
@@ -325,35 +359,5 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontWeight: "500",
     textAlign: "center",
-  },
-  seeMoreButton: {
-    padding: 10,
-    marginVertical: 10,
-    alignItems: "center",
-  },
-  seeMoreText: {
-    color: "#ffffff",
-    fontSize: 16,
-  },
-  suggestionItem: {
-    padding: 14,
-    borderBottomWidth: 2,
-    borderBottomColor: "#ccc",
-    marginRight:30,
-    marginLeft:20,
-  },
-  suggestionText: {
-    color: "#ffffff",
-  },
-  suggestionList: {
-    position: "absolute",
-    top: 100,
-    width: "100%",
-    backgroundColor: "#1e293b",
-    borderRadius: 8,
-    elevation: 5,
-    maxHeight: 150,
-    zIndex: 1,
-    marginLeft:15,
   },
 });

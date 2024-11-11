@@ -30,11 +30,11 @@ function BottomTabs() {
         <Tab.Navigator
             screenOptions={{
                 tabBarStyle: {
-                    backgroundColor: "rgba(255, 255, 255, 0.5)",  // Semi-transparent white for a glass effect
+                    backgroundColor: "#abb2b9",  // Semi-transparent white for a glass effect
                     position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
+                    // bottom: 0,
+                    // left: 0,
+                    // right: 0,
                     shadowColor: "#000", // Shadow color
                     shadowOpacity: 0.3,
                     shadowRadius: 10,
@@ -45,7 +45,7 @@ function BottomTabs() {
                     },
                     borderTopWidth: 0,
                     borderRadius: 15, // Rounded corners
-                    margin: 10, // Add margin to make it look more elevated
+                    //margin: 10, // Add margin to make it look more elevated
                 },
                 tabBarLabelStyle: {
                     color: "#4f4f4f",
@@ -61,7 +61,7 @@ function BottomTabs() {
                     tabBarLabelStyle: { color: "white" },
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <FontAwesome name="home" size={24} color="black" />
+                            <FontAwesome name="home" size={24} color="#212f3d" />
                         ) : (
                             <AntDesign name="home" size={24} color="black" />
                         ),
@@ -75,7 +75,7 @@ function BottomTabs() {
                     tabBarLabelStyle: { color: "white" },
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <MaterialCommunityIcons name="file-upload" size={24} color="black" />
+                            <MaterialCommunityIcons name="file-upload" size={24} color="#212f3d" />
                         ) : (
                             <MaterialIcons name="upload-file" size={24} color="black" />
                         ),
@@ -89,7 +89,7 @@ function BottomTabs() {
                     tabBarLabelStyle: { color: "white" },
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <Ionicons name="library" size={24} color="black" />
+                            <Ionicons name="library" size={24} color="#212f3d" />
                         ) : (
                             <Ionicons name="library-outline" size={24} color="black" />
                         ),
@@ -103,7 +103,7 @@ function BottomTabs() {
                     tabBarLabelStyle: { color: "white" },
                     tabBarIcon: ({ focused }) =>
                         focused ? (
-                            <Ionicons name="person" size={24} color="black" />
+                            <Ionicons name="person" size={24} color="#212f3d" />
                         ) : (
                             <MaterialIcons name="person-outline" size={24} color="black" />
                         ),
