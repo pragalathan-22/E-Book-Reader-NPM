@@ -33,7 +33,6 @@ const AuthorPage = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Authors</Text>
       <ScrollView contentContainerStyle={styles.authorsContainer}>
         {authorsData.map((author, index) => (
           <TouchableOpacity

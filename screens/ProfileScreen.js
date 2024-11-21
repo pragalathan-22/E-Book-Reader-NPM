@@ -44,10 +44,6 @@ const ProfileScreen = () => {
     setModalVisible(true);
   };
 
-  const openFullImageModal = () => {
-    setFullImageModalVisible(true);
-  };
-
   const playBook = (book) => {
     addToRecentlyPlayed(book);
     navigation.navigate('PlayScreen', { book }); // Navigate to PlayScreen with book details
@@ -70,7 +66,8 @@ const ProfileScreen = () => {
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
           {/* Profile Information */}
           <View style={styles.profileSection}>
-            <TouchableOpacity onPress={openFullImageModal}>
+            {/* Removed onPress for profile image to prevent modal from opening */}
+            <TouchableOpacity>
               <Image 
                 source={{ uri: profileImage }}
                 style={styles.profileImage}
@@ -133,9 +130,6 @@ const ProfileScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('HelpSupport')}>
               <Text style={styles.optionText}>Help & Support</Text>
-            {/* </TouchableOpacity>
-            <TouchableOpacity style={styles.optionItem} onPress={() => navigation.navigate('')}>
-              <Text style={styles.optionText}>History</Text> */}
             </TouchableOpacity>
             <TouchableOpacity style={styles.optionItem} onPress={handleLogout}>
               <Text style={styles.optionText}>Logout</Text>
@@ -199,7 +193,7 @@ const ProfileScreen = () => {
 
     </SafeAreaView>
   );
-};
+}; 
 
 export default ProfileScreen;
 

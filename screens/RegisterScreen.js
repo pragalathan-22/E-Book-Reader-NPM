@@ -1,4 +1,3 @@
-// screens/RegisterScreen.js
 import React, { useState } from 'react';
 import {
   StyleSheet,
@@ -7,19 +6,17 @@ import {
   TextInput,
   Pressable,
   Alert,
-  ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { auth, db } from '../services/firebase';
-import { setDoc, doc } from 'firebase/firestore';
-
-const backgroundImage = require('../assets/2.jpg'); // Ensure you have this image in the mentioned path
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../services/firebase'; // Ensure firebase is properly initialized in services/firebase.js
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
 
   const handleRegister = async () => {
@@ -33,107 +30,110 @@ const RegisterScreen = () => {
       return;
     }
 
+    setIsLoading(true);
+
     try {
-      // Create a user with email and password
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      console.log('Registered with:', user.email);
-
-      // Send a verification email
-      await sendEmailVerification(user);
-      Alert.alert('Verification Email Sent', 'Please check your email to verify your account.');
-
-      // Store user information in Firestore
-      await setDoc(doc(db, 'users', user.uid), {
-        email: user.email,
-        createdAt: new Date(),
-        isVerified: false, // You may use this to track verification status in Firestore
-      });
-
-      // Navigate to login or verification screen after registration
-      navigation.navigate('Login');
+      // Firebase user registration
+      await createUserWithEmailAndPassword(auth, email, password);
+      Alert.alert('Success', 'Registration successful!');
+      navigation.navigate('Login'); // Navigate to Login screen
     } catch (error) {
-      console.error('Error during registration:', error);
-      if (error.code === 'auth/email-already-in-use') {
-        Alert.alert('Email In Use', 'This email address is already in use.');
-      } else if (error.code === 'auth/invalid-email') {
-        Alert.alert('Invalid Email', 'Please enter a valid email address.');
-      } else if (error.code === 'auth/weak-password') {
-        Alert.alert('Weak Password', 'Password should be at least 6 characters.');
-      } else {
-        Alert.alert('Registration Error', error.message);
-      }
+      handleError(error);
+    } finally {
+      setIsLoading(false); // Hide loading indicator
     }
   };
 
+  const handleError = (error) => {
+    const errorMap = {
+      'auth/email-already-in-use': 'This email address is already in use.',
+      'auth/invalid-email': 'Please enter a valid email address.',
+      'auth/weak-password': 'Password should be at least 6 characters.',
+    };
+
+    const message = errorMap[error.code] || 'An unexpected error occurred.';
+    Alert.alert('Error', message);
+  };
+
   return (
-    <ImageBackground source={backgroundImage} style={styles.background}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Register</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          secureTextEntry
-          onChangeText={setPassword}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          secureTextEntry
-          onChangeText={setConfirmPassword}
-        />
+    <View style={styles.container}>
+      <Text style={styles.title}>Register</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        secureTextEntry
+        onChangeText={setPassword}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm Password"
+        value={confirmPassword}
+        secureTextEntry
+        onChangeText={setConfirmPassword}
+      />
+      {isLoading ? (
+        <ActivityIndicator size="large" color="#007bff" />
+      ) : (
         <Pressable style={styles.registerButton} onPress={handleRegister}>
           <Text style={styles.buttonText}>Register</Text>
         </Pressable>
-      </View>
-    </ImageBackground>
+      )}
+      <Pressable onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.loginText}>Already have an account? Login</Text>
+      </Pressable>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 16,
+    padding: 20,
+    backgroundColor: '#f8f9fa',
   },
   title: {
     fontSize: 24,
+    fontWeight: 'bold',
     marginBottom: 20,
-    color: "white",
+    color: '#333',
   },
   input: {
     width: '100%',
-    padding: 12,
-    marginVertical: 8,
-    backgroundColor: '#fff',
-    borderRadius: 25,
-    marginTop: 10,
+    height: 50,
+    backgroundColor: '#e9ecef',
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 15,
   },
   registerButton: {
-    backgroundColor: '#7CB9E8',
-    padding: 15,
-    borderRadius: 25,
-    alignItems: 'center',
     width: '100%',
-    marginTop: 20,
+    height: 50,
+    backgroundColor: '#007bff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    marginTop: 10,
   },
   buttonText: {
-    color: 'white',
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
+  },
+  loginText: {
+    marginTop: 15,
+    color: '#007bff',
+    fontSize: 14,
   },
 });
 

@@ -40,7 +40,6 @@ const SeeMoreScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <LinearGradient colors={["#212f3d", "#212f3d"]} style={styles.gradient}>
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-          <Text style={styles.sectionTitle}>              More Books</Text>
           <View style={styles.booksContainer}>
             {books.map((book) => (
               <TouchableOpacity

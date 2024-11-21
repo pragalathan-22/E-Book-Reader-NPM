@@ -1,4 +1,3 @@
-// Import necessary components and hooks
 import {
   SafeAreaView,
   ScrollView,
@@ -13,6 +12,7 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
   FlatList,
+  ActivityIndicator, // Import ActivityIndicator for the loading spinner
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -26,12 +26,15 @@ const HomeScreen = () => {
   const [searchText, setSearchText] = useState("");
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [booksData, setBooksData] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
   const fetchBooks = async () => {
+    setLoading(true); // Set loading to true before fetching
     const booksCollection = collection(db, 'books');
     const booksSnapshot = await getDocs(booksCollection);
     const booksList = booksSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setBooksData(booksList);
+    setLoading(false); // Set loading to false after data is fetched
   };
 
   useEffect(() => {
@@ -121,77 +124,84 @@ const HomeScreen = () => {
               />
             )}
 
-            <ScrollView contentContainerStyle={[styles.scrollContainer, { paddingBottom: 80 }]}>
-              <Text style={styles.sectionTitle}>Authors</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.authorsContainer}
-                style={{ paddingHorizontal: 16 }}
-                decelerationRate="fast"
-              >
-                {uniqueAuthors.slice(0, 4).map((book) => (
-                  <AuthorProfile 
-                    key={book.id}
-                    name={book.authorName}
-                    authorImage={book.authorImage}
-                    onPress={() => navigation.navigate('AuthorBooksScreen', { authorName: book.authorName })}
-                  />
-                ))}
-                <TouchableOpacity
-                  style={styles.seeMoreButton}
-                  onPress={() => navigation.navigate("AuthorPage")}
+            {/* Show the loading spinner while data is being fetched */}
+            {loading ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#ffffff" />
+              </View>
+            ) : (
+              <ScrollView contentContainerStyle={[styles.scrollContainer, { paddingBottom: 80 }]}>
+                <Text style={styles.sectionTitle}>Authors</Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.authorsContainer}
+                  style={{ paddingHorizontal: 16 }}
+                  decelerationRate="fast"
                 >
-                  <Text style={styles.seeMoreText}>See More</Text>
-                </TouchableOpacity>
-              </ScrollView>
+                  {uniqueAuthors.slice(0, 4).map((book) => (
+                    <AuthorProfile 
+                      key={book.id}
+                      name={book.authorName}
+                      authorImage={book.authorImage}
+                      onPress={() => navigation.navigate('AuthorBooksScreen', { authorName: book.authorName })}
+                    />
+                  ))}
+                  <TouchableOpacity
+                    style={styles.seeMoreButton}
+                    onPress={() => navigation.navigate("AuthorPage")}
+                  >
+                    <Text style={styles.seeMoreText}>See More</Text>
+                  </TouchableOpacity>
+                </ScrollView>
 
-              <Text style={styles.sectionTitle}>All Books</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.clipContainer}
-              >
-                {booksData.slice(0, 4).map((book, index) => (
-                  <ClipCard 
-                    key={index} 
-                    title={book.bookName} 
-                    image={book.bookImage} 
-                    book={book}
-                    navigation={navigation}
-                  />
-                ))}
-                <TouchableOpacity
-                  style={styles.seeMoreButton}
-                  onPress={() => navigation.navigate("SeeMore")}
+                <Text style={styles.sectionTitle}>All Books</Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.clipContainer}
                 >
-                  <Text style={styles.seeMoreText}>See More</Text>
-                </TouchableOpacity>
-              </ScrollView>
+                  {booksData.slice(0, 4).map((book, index) => (
+                    <ClipCard 
+                      key={index} 
+                      title={book.bookName} 
+                      image={book.bookImage} 
+                      book={book}
+                      navigation={navigation}
+                    />
+                  ))}
+                  <TouchableOpacity
+                    style={styles.seeMoreButton}
+                    onPress={() => navigation.navigate("SeeMore")}
+                  >
+                    <Text style={styles.seeMoreText}>See More</Text>
+                  </TouchableOpacity>
+                </ScrollView>
 
-              <Text style={styles.sectionTitle}>Suggestions</Text>
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.clipContainer}
-              >
-                {booksData.slice(0, 4).map((book, index) => (
-                  <ClipCard 
-                    key={index} 
-                    title={book.bookName} 
-                    image={book.bookImage} 
-                    book={book}
-                    navigation={navigation}
-                  />
-                ))}
-                <TouchableOpacity
-                  style={styles.seeMoreButton}
-                  onPress={() => navigation.navigate('Suggestions')} 
+                <Text style={styles.sectionTitle}>Suggestions</Text>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.clipContainer}
                 >
-                  <Text style={styles.seeMoreText}>See More</Text>
-                </TouchableOpacity>
+                  {booksData.slice(0, 4).map((book, index) => (
+                    <ClipCard 
+                      key={index} 
+                      title={book.bookName} 
+                      image={book.bookImage} 
+                      book={book}
+                      navigation={navigation}
+                    />
+                  ))}
+                  <TouchableOpacity
+                    style={styles.seeMoreButton}
+                    onPress={() => navigation.navigate('Suggestions')} 
+                  >
+                    <Text style={styles.seeMoreText}>See More</Text>
+                  </TouchableOpacity>
+                </ScrollView>
               </ScrollView>
-            </ScrollView>
+            )}
           </SafeAreaView>
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

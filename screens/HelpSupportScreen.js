@@ -3,11 +3,16 @@ import { SafeAreaView, ScrollView, StyleSheet, Text, View, TouchableOpacity, Tex
 import Icon from 'react-native-vector-icons/Ionicons';
 import { collection, addDoc, onSnapshot, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../services/firebase'; // Import Firestore from your firebase config
+import { getAuth } from 'firebase/auth'; // For Firebase Auth
 
 const HelpSupportScreen = () => {
   const [selectedQuestionIndex, setSelectedQuestionIndex] = useState(null);
   const [query, setQuery] = useState('');
   const [submittedQueries, setSubmittedQueries] = useState([]); // State for submitted queries
+
+  // Fetch current user data
+  const auth = getAuth();
+  const user = auth.currentUser; // Get the current authenticated user
 
   const faqs = [
     { question: "How do I reset my password?", answer: "To reset your password, go to the settings and select 'Reset Password'." },
@@ -19,11 +24,12 @@ const HelpSupportScreen = () => {
   const handleSubmitQuery = async () => {
     if (query.trim()) {
       try {
-        // Add the query to Firestore
+        // Add the query to Firestore, including the user's email
         await addDoc(collection(db, 'queries'), {
           query: query,
           status: 'pending',
           createdAt: new Date(),
+          userEmail: user.email,  // Store user's email with the query
         });
         setQuery(''); // Clear input after submitting
       } catch (error) {
@@ -32,18 +38,21 @@ const HelpSupportScreen = () => {
     }
   };
 
-  // Fetch queries from Firestore in real-time
+  // Fetch queries from Firestore in real-time and filter by current user's email
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'queries'), (snapshot) => {
-      const queries = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const queries = snapshot.docs
+        .map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        .filter(query => query.userEmail === user.email); // Filter queries by user's email
+    
       setSubmittedQueries(queries);
     });
 
     return () => unsubscribe(); // Cleanup listener on unmount
-  }, []);
+  }, [user.email]); // Add user.email to dependency array to refetch when email changes
 
   // Handle FAQ toggle
   const handleQuestionPress = (index) => {
@@ -175,6 +184,7 @@ const styles = StyleSheet.create({
     color: 'white',
     flex: 1,
     marginRight: 10,
+    height: 40,
   },
   submitButton: {
     padding: 10,

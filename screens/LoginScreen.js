@@ -2,15 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, SafeAreaView, Pressable, Alert, TextInput, ImageBackground } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import FontAwesome from '@expo/vector-icons/FontAwesome'; // Importing FontAwesome for phone icon
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../services/firebase'; // Adjust the path as needed
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { db } from '../services/firebase'; // Import Firestore database
+import { setDoc, doc } from 'firebase/firestore'; // Firestore functions
 import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
 import * as Animatable from 'react-native-animatable';
-import { GoogleAuthProvider } from 'firebase/auth';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -49,7 +48,17 @@ const LoginScreen = () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      console.log('User signed in:', userCredential.user);
+      const user = userCredential.user;
+
+      console.log('User signed in:', user);
+
+      // Add user data to Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+        createdAt: new Date(),
+        isVerified: user.emailVerified, // You can track verification status
+      });
+
       navigation.navigate('Main'); // Navigate to Main screen
     } catch (error) {
       console.error('Error signing in with email:', error);
@@ -61,7 +70,17 @@ const LoginScreen = () => {
     const credential = GoogleAuthProvider.credential(idToken);
     try {
       const userCredential = await auth.signInWithCredential(credential);
-      console.log('User signed in with Google:', userCredential.user);
+      const user = userCredential.user;
+
+      console.log('User signed in with Google:', user);
+
+      // Add user data to Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        email: user.email,
+        createdAt: new Date(),
+        isVerified: user.emailVerified, // You can track verification status
+      });
+
       navigation.navigate('Main'); // Navigate to Main screen
     } catch (error) {
       console.error('Error during Google sign-in:', error);
@@ -154,6 +173,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     width: 300,
+    height:45,
     borderRadius: 25,
   },
   signInButton: {

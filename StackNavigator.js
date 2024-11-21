@@ -14,7 +14,6 @@ import PlayScreen from './screens/PlayScreen';
 import SearchResultsScreen from "./screens/SearchResultsScreen";
 import AuthorPage from "./screens/AuthorPage";
 import AuthorBooksScreen from "./screens/AuthorBooksScreen";
-
 import ImportPlayScreen from "./screens/ImportPlayScreen";
 import HelpSupportScreen from "./screens/HelpSupportScreen";
 import AppPreferencesScreen from "./screens/AppPreferencesScreen";
@@ -30,11 +29,8 @@ function BottomTabs() {
         <Tab.Navigator
             screenOptions={{
                 tabBarStyle: {
-                    backgroundColor: "#abb2b9",  // Semi-transparent white for a glass effect
+                    backgroundColor: "#abb2b9", // Semi-transparent white for a glass effect
                     position: "absolute",
-                    // bottom: 0,
-                    // left: 0,
-                    // right: 0,
                     shadowColor: "#000", // Shadow color
                     shadowOpacity: 0.3,
                     shadowRadius: 10,
@@ -45,7 +41,6 @@ function BottomTabs() {
                     },
                     borderTopWidth: 0,
                     borderRadius: 15, // Rounded corners
-                    //margin: 10, // Add margin to make it look more elevated
                 },
                 tabBarLabelStyle: {
                     color: "#4f4f4f",
@@ -54,7 +49,9 @@ function BottomTabs() {
                 tabBarInactiveTintColor: "#95a5a6",
             }}
         >
-            <Tab.Screen name="Home" component={HomeScreen}
+            <Tab.Screen
+                name="Home"
+                component={HomeScreen}
                 options={{
                     tabBarLabel: "Home",
                     headerShown: false,
@@ -68,7 +65,9 @@ function BottomTabs() {
                 }}
             />
 
-            <Tab.Screen name="Import" component={ImportScreen}
+            <Tab.Screen
+                name="Import"
+                component={ImportScreen}
                 options={{
                     tabBarLabel: "Import",
                     headerShown: false,
@@ -82,7 +81,9 @@ function BottomTabs() {
                 }}
             />
 
-            <Tab.Screen name="Library" component={LilbraryScreen}
+            <Tab.Screen
+                name="Library"
+                component={LilbraryScreen}
                 options={{
                     tabBarLabel: "Library",
                     headerShown: false,
@@ -96,7 +97,9 @@ function BottomTabs() {
                 }}
             />
 
-            <Tab.Screen name="Profile" component={ProfileScreen}
+            <Tab.Screen
+                name="Profile"
+                component={ProfileScreen}
                 options={{
                     tabBarLabel: "Profile",
                     headerShown: false,
@@ -117,22 +120,32 @@ const Stack = createNativeStackNavigator();
 
 function Navigation() {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: '#334155', // Blue background for stack header
+                },
+                headerTintColor: '#fff', // White text in the header
+                headerTitleStyle: {
+                    fontWeight: 'bold', // Bold header title
+                },
+            }}
+        >
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Import" component={ImportScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
             <Stack.Screen name="LibraryScreen" component={LilbraryScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="SeeMore" component={SeeMoreScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="SeeMore" component={SeeMoreScreen} />
             <Stack.Screen name="PlayScreen" component={PlayScreen} options={{ headerShown: false }} />
             <Stack.Screen name="SearchResults" component={SearchResultsScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="AuthorPage" component={AuthorPage} options={{ headerShown: false }} />
-            <Stack.Screen name="AuthorBooksScreen" component={AuthorBooksScreen} options={{ headerShown: false }} />   
+            <Stack.Screen name="AuthorPage" component={AuthorPage} />
+            <Stack.Screen name="AuthorBooksScreen" component={AuthorBooksScreen} />
             <Stack.Screen name="ImportPlayScreen" component={ImportPlayScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="HelpSupport" component={HelpSupportScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="AppPreferencesScreen" component={AppPreferencesScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="HelpSupport" component={HelpSupportScreen} />
+            <Stack.Screen name="AppPreferencesScreen" component={AppPreferencesScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="AccountSettingsScreen" component={AccountSettingsScreen} options={{headerShown:false}}/>
-            <Stack.Screen name="Suggestions" component={SuggestionsPage} options={{headerShown:false}} />
+            <Stack.Screen name="AccountSettingsScreen" component={AccountSettingsScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Suggestions" component={SuggestionsPage} />
         </Stack.Navigator>
     );
 }

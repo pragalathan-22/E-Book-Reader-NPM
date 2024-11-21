@@ -22,7 +22,7 @@ const PlayScreen = ({ route }) => {
   const [playingChapter, setPlayingChapter] = useState(null);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const translatedContentRef = useRef('');
+  const translatedContentRef = useRef(''); // To hold the translated content
   const wordHighlightIntervalRef = useRef(null);
   const currentSpeechIndexRef = useRef(0); // Reference for current speech index
 
@@ -50,6 +50,7 @@ const PlayScreen = ({ route }) => {
 
   const handlePlayChapter = async (chapter, index) => {
     if (playingChapter !== null && playingChapter !== index) {
+      // Stop the current chapter before starting the new one
       Speech.stop();
       setIsPlaying(false);
       setPlayingChapter(null);
@@ -80,7 +81,7 @@ const PlayScreen = ({ route }) => {
         pitch: selectedVoice === 'Female' ? 1 : 1.2,
         rate: 0.8,
         onStart: () => {
-          setCurrentWordIndex(currentSpeechIndexRef.current); // Start from the current index
+          setCurrentWordIndex(0); // Start from the first word for the new chapter
           startWordHighlighting(words);
         },
         onDone: () => {
@@ -97,13 +98,8 @@ const PlayScreen = ({ route }) => {
         },
       };
 
-      // Start speech from the current word index if resuming
-      if (currentWordIndex > 0) {
-        const currentText = words.slice(currentWordIndex).join(' ');
-        Speech.speak(currentText, options);
-      } else {
-        Speech.speak(translatedContentRef.current, options);
-      }
+      // Start speech from the first word of the chapter
+      Speech.speak(translatedContentRef.current, options);
 
       setIsPlaying(true);
       setPlayingChapter(index);
@@ -219,14 +215,13 @@ const PlayScreen = ({ route }) => {
         <Modal
           transparent={true}
           visible={isModalVisible}
-          animationType="slide"
           onRequestClose={() => setIsModalVisible(false)}
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>{book.bookName}</Text>
-              <Text style={styles.modalAuthor}>{book.authorName}</Text>
-              <Text style={styles.modalDescription}>{book.description}</Text>
+              <Text style={styles.modalTitle}>About the Book</Text>
+              <Text style={styles.modalText}>Author: {book.authorName}</Text>
+              <Text style={styles.modalText}>Description: {book.description}</Text>
               <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton}>
                 <Text style={styles.closeButtonText}>Close</Text>
               </TouchableOpacity>
@@ -272,11 +267,12 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   textContainer: {
+    flex:1,
     padding: 20,
     width: '100%',
     backgroundColor:"#212f3d",
-    height:500,
     borderRadius:30,
+    bottom:-10,
   },
   bookHeader: {
     flexDirection: 'row',
@@ -331,6 +327,7 @@ const styles = StyleSheet.create({
   chapterContent: {
     fontSize: 24, // Increased font size
     color: 'white',
+    marginBottom:10,
   },
   modalOverlay: {
     flex: 1,
