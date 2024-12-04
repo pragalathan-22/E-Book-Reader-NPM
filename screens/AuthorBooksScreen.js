@@ -22,7 +22,7 @@ const AuthorBooksScreen = () => {
 
   useEffect(() => {
     fetchBooksByAuthor();
-  }, []);
+  },);
 
   const handleBookPress = (book) => {
     navigation.navigate('PlayScreen', { book });
@@ -104,17 +104,6 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 14,
     marginTop: 10,
-  },
-  backButton: {
-    marginTop: 20,
-    backgroundColor: "#2b394b",
-    padding: 10,
-    borderRadius: 20,
-    alignItems: "center",
-  },
-  backButtonText: {
-    color: "#ffffff",
-    fontWeight: "600",
   },
 });
 

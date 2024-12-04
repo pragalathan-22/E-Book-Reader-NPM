@@ -37,7 +37,7 @@ const PlayScreen = ({ route }) => {
       Speech.stop();
       clearInterval(wordHighlightIntervalRef.current);
     };
-  }, []);
+  },);
 
   const handleBookPlay = async () => {
     // Increment the suggestion count
@@ -344,14 +344,6 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-  },
-  modalAuthor: {
-    fontSize: 20,
-    fontStyle: 'italic',
-  },
-  modalDescription: {
-    fontSize: 16,
-    marginVertical: 10,
   },
   closeButton: {
     alignSelf: 'flex-end',

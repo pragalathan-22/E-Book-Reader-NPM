@@ -38,7 +38,7 @@ const LoginScreen = () => {
       const { id_token } = response.params;
       handleGoogleSignIn(id_token);
     }
-  }, [response]);
+  },);
 
   const handleEmailSignIn = async () => {
     if (!email || !password) {
@@ -199,34 +199,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 16,
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 30,
-    width: 300, // Set the width to match the button above
-    alignSelf: 'center', // Center the container
-  },
-  iconButton: {
-    padding: 10,
-    alignItems: 'center',
-    flex: 1, // Allow buttons to grow equally
-    justifyContent: 'center',
-  },
-  circleIcon: {
-    backgroundColor: '#e2e8f0',
-    borderRadius: 30,
-    padding: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
   },
   footer: {
     flexDirection: 'row',

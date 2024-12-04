@@ -5,21 +5,11 @@
   },
   "build": {
     "preview": {
-      "android": {
-        "buildType": "apk"
+      "ios": {
+        "simulator": true
       }
     },
-    "preview2": {
-      "android": {
-        "gradleCommand": ":app:assembleRelease"
-      }
-    },
-    "preview3": {
-      "developmentClient": true
-    },
-    "production": {
-      "autoIncrement": true
-    }
+    "production": {}
   },
   "submit": {
     "production": {}

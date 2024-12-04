@@ -1,9 +1,8 @@
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet } from 'react-native';
-import Navigation from './StackNavigator'; // Ensure this is the correct path to your navigator
-import { BookProvider } from './context/BookContext'; // Adjust the path as needed
-import { ThemeProvider } from './context/ThemeContext'; // Adjust the path as needed
+import Navigation from './StackNavigator'; 
+import { BookProvider } from './context/BookContext'; 
+import { ThemeProvider } from './context/ThemeContext';
 import { NavigationContainer } from '@react-navigation/native';
 
 export default function App() {
@@ -18,12 +17,3 @@ export default function App() {
         </ThemeProvider>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});

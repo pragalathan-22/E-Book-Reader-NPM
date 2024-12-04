@@ -74,18 +74,6 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
   },
-  backButton: {
-    backgroundColor: '#2b394b',
-    padding: 10,
-    borderRadius: 5,
-    alignSelf: 'flex-start',
-    margin: 20,
-  },
-  backButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   contentContainer: {
     padding: 20,
     paddingBottom: 100,

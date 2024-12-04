@@ -50,7 +50,7 @@ const ImportScreen = () => {
 
   useEffect(() => {
     loadFiles();
-  }, []);
+  }, );
 
   const handleImportFiles = async () => {
     console.log("Opening Document Picker..."); // Debug log

@@ -201,27 +201,4 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
   },
-  verificationContainer: {
-    marginVertical: 10,
-    padding: 15,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 5,
-  },
-  input: {
-    padding: 10,
-    backgroundColor: 'white',
-    borderRadius: 5,
-    marginBottom: 10,
-  },
-  verifyButton: {
-    padding: 10,
-    backgroundColor: 'lightblue',
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  verifyButtonText: {
-    color: '#ffffff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
 });

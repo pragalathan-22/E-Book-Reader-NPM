@@ -58,13 +58,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#212f3d",
     padding: 16,
   },
-  title: {
-    fontSize: 24,
-    color: "#ffffff",
-    fontWeight: "700",
-    textAlign: "center",
-    marginVertical: 20,
-  },
   authorsContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -88,17 +81,6 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 16,
     textAlign: 'center',
-  },
-  backButton: {
-    marginTop: 20,
-    backgroundColor: "#2b394b",
-    padding: 10,
-    borderRadius: 20,
-    alignItems: "center",
-  },
-  backButtonText: {
-    color: "#ffffff",
-    fontWeight: "600",
   },
 });
 

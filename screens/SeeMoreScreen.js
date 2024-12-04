@@ -74,13 +74,6 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 100, // Ensure content is visible above bottom nav
   },
-  sectionTitle: {
-    color: 'white',
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    marginTop:10,
-  },
   booksContainer: {
     flexDirection: 'column', // Arrange items in a column
     justifyContent: 'flex-start',
@@ -113,10 +106,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     lineHeight: 36, // Try increasing line height (e.g., 36 or more)
     marginBottom: 10,
-  },
-  bookAuthor: {
-    color: 'gray',
-    fontSize: 14,
   },
   loadingContainer: {
     flex: 1,
