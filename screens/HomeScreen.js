@@ -19,13 +19,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { db } from '../services/firebase';
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState("");
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [booksData, setBooksData] = useState([]);
+  const [suggestedBooks, setSuggestedBooks] = useState([]); // For storing suggested books
   const [loading, setLoading] = useState(true); // Loading state
 
   const fetchBooks = async () => {
@@ -37,8 +38,21 @@ const HomeScreen = () => {
     setLoading(false); // Set loading to false after data is fetched
   };
 
+  // Fetch suggested books from Firebase ordered by suggestionCount
+  const fetchSuggestedBooks = async () => {
+    try {
+      const q = query(collection(db, 'books'), orderBy('suggestionCount', 'desc'));
+      const querySnapshot = await getDocs(q);
+      const books = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setSuggestedBooks(books);
+    } catch (error) {
+      console.error('Error fetching suggested books: ', error);
+    }
+  };
+
   useEffect(() => {
     fetchBooks();
+    fetchSuggestedBooks(); // Fetch suggested books
   }, []);
 
   const handleSearch = (text) => {
@@ -184,7 +198,7 @@ const HomeScreen = () => {
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.clipContainer}
                 >
-                  {booksData.slice(0, 4).map((book, index) => (
+                  {suggestedBooks.slice(0, 4).map((book, index) => (
                     <ClipCard 
                       key={index} 
                       title={book.bookName} 
@@ -250,6 +264,7 @@ const ClipCard = ({ title, image, book, navigation }) => {
 };
 
 export default HomeScreen;
+
 
 const styles = StyleSheet.create({
   gradient: {

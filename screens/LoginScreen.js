@@ -26,7 +26,7 @@ const LoginScreen = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
-        navigation.navigate('Main'); // Navigate to the main screen if the user is authenticated
+        navigation.replace('Main'); // Navigate to the main screen if the user is authenticated
       }
     });
 
@@ -59,7 +59,7 @@ const LoginScreen = () => {
         isVerified: user.emailVerified, // You can track verification status
       });
 
-      navigation.navigate('Main'); // Navigate to Main screen
+      navigation.replace('Main'); // Navigate to Main screen
     } catch (error) {
       console.error('Error signing in with email:', error);
       Alert.alert('Login Failed', error.message);
@@ -125,23 +125,6 @@ const LoginScreen = () => {
             <Text style={styles.buttonText}>Sign In With Mail</Text>
           </Pressable>
         </Animatable.View>
-
-        {/* Google Sign In and Phone Sign In Buttons */}
-        {/* <Animatable.View animation="bounceIn" duration={1500}>
-          <View style={styles.iconContainer}>
-            <Pressable style={styles.iconButton} onPress={() => promptAsync()}>
-              <View style={styles.circleIcon}>
-                <AntDesign name="googleplus" size={20} color="black" />
-              </View>
-            </Pressable>
-            
-            <Pressable style={styles.iconButton} onPress={() => Alert.alert("Phone Sign In clicked")}>
-              <View style={styles.circleIcon}>
-                <FontAwesome name="phone" size={20} color="black" />
-              </View>
-            </Pressable>
-          </View>
-        </Animatable.View> */}
 
         {/* Already have an account? */}
         <View style={styles.footer}>
