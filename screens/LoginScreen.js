@@ -1,6 +1,5 @@
-// screens/LoginScreen.js
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Pressable, Alert, TextInput, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Pressable, Alert, TextInput, ImageBackground, ActivityIndicator } from 'react-native';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
 import { auth } from '../services/firebase'; // Adjust the path as needed
@@ -16,29 +15,25 @@ WebBrowser.maybeCompleteAuthSession();
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(true); // Add a loading state
   const navigation = useNavigation();
 
   // Google Sign-In setup
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: 'AIzaSyAr_EtvpTL8zbgwv1Rc1plNJscRTqtzB5Q', // Replace with your actual client ID
+    clientId: 'YOUR_GOOGLE_CLIENT_ID', // Replace with your actual client ID
   });
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         navigation.replace('Main'); // Navigate to the main screen if the user is authenticated
+      } else {
+        setLoading(false); // Stop the loading spinner
       }
     });
 
     return () => unsubscribe(); // Clean up the subscription on unmount
   }, [navigation]);
-
-  useEffect(() => {
-    if (response?.type === 'success') {
-      const { id_token } = response.params;
-      handleGoogleSignIn(id_token);
-    }
-  },);
 
   const handleEmailSignIn = async () => {
     if (!email || !password) {
@@ -66,27 +61,13 @@ const LoginScreen = () => {
     }
   };
 
-  const handleGoogleSignIn = async (idToken) => {
-    const credential = GoogleAuthProvider.credential(idToken);
-    try {
-      const userCredential = await auth.signInWithCredential(credential);
-      const user = userCredential.user;
-
-      console.log('User signed in with Google:', user);
-
-      // Add user data to Firestore
-      await setDoc(doc(db, 'users', user.uid), {
-        email: user.email,
-        createdAt: new Date(),
-        isVerified: user.emailVerified, // You can track verification status
-      });
-
-      navigation.navigate('Main'); // Navigate to Main screen
-    } catch (error) {
-      console.error('Error during Google sign-in:', error);
-      Alert.alert('Google Sign-In Failed', error.message);
-    }
-  };
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#94a3b8" />
+      </View>
+    );
+  }
 
   return (
     <ImageBackground 
@@ -142,6 +123,12 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f8f9fa',
+  },
   title: {
     color: 'white',
     fontSize: 35,
@@ -156,7 +143,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     width: 300,
-    height:45,
+    height: 45,
     borderRadius: 25,
   },
   signInButton: {

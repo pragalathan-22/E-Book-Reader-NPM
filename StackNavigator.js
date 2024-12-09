@@ -132,8 +132,8 @@ function Navigation() {
             }}
         >
             <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-            <Stack.Screen name="Import" component={ImportScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Main" component={BottomTabs} options={{ headerShown: false }} />
+            <Stack.Screen name="Import" component={ImportScreen} options={{ headerShown: false }} />
             <Stack.Screen name="LibraryScreen" component={LilbraryScreen} options={{ headerShown: false }} />
             <Stack.Screen name="SeeMore" component={SeeMoreScreen} />
             <Stack.Screen name="PlayScreen" component={PlayScreen} options={{ headerShown: false }} />
