@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import * as Speech from 'expo-speech';
 import { BookContext } from '../context/BookContext';
-import { doc, updateDoc } from "firebase/firestore"; // Import Firebase Firestore functions
+import { doc, updateDoc } from 'firebase/firestore'; // Import Firebase Firestore functions
 import { db } from '../services/firebase'; // Import your Firebase configuration
 
 // Dummy translation function
@@ -37,11 +37,11 @@ const PlayScreen = ({ route }) => {
       Speech.stop();
       clearInterval(wordHighlightIntervalRef.current);
     };
-  },);
+  }, []);
 
   const handleBookPlay = async () => {
     // Increment the suggestion count
-    const bookRef = doc(db, "books", book.id);
+    const bookRef = doc(db, 'books', book.id);
     await updateDoc(bookRef, {
       suggestionCount: (book.suggestionCount || 0) + 1,
     });
@@ -63,6 +63,7 @@ const PlayScreen = ({ route }) => {
       clearInterval(wordHighlightIntervalRef.current);
       setIsPlaying(false);
       setPlayingChapter(null);
+      setCurrentWordIndex(0);
     } else {
       if (selectedLanguage !== 'English' && translatedContentRef.current === '') {
         translatedContentRef.current = await translateText(chapter.content, selectedLanguage);
@@ -153,7 +154,7 @@ const PlayScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={["#abb2b9", "#abb2b9"]} style={styles.gradient}>
+      <LinearGradient colors={['#abb2b9', '#abb2b9']} style={styles.gradient}>
         <View style={styles.bookContainer}>
           <Image source={{ uri: book.bookImage }} style={styles.bookCover} />
         </View>
@@ -165,7 +166,7 @@ const PlayScreen = ({ route }) => {
                 {book.bookName}
               </Text>
               <Text style={styles.bookAuthor} numberOfLines={1} ellipsizeMode="tail">
-                Author:  {book.authorName}
+                Author: {book.authorName}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={isBookSaved ? handleUnsaveBook : handleSaveBook} style={styles.saveIconContainer}>
@@ -219,12 +220,11 @@ const PlayScreen = ({ route }) => {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
-              <Text style={styles.modalTitle}>About the Book</Text>
-              <Text style={styles.modalText}>Author: {book.authorName}</Text>
-              <Text style={styles.modalText}>Description: {book.description}</Text>
               <TouchableOpacity onPress={() => setIsModalVisible(false)} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>Close</Text>
+                <Icon name="close" size={24} color="white" />
               </TouchableOpacity>
+              <Text style={styles.modalTitle}>Author: {book.authorName}</Text>
+              <Text style={styles.modalDescription}>{book.description}</Text>
             </View>
           </View>
         </Modal>
